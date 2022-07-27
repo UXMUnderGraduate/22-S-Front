@@ -13,7 +13,7 @@ import {
 import "react-pro-sidebar/dist/css/styles.css";
 import styled from "styled-components";
 import "./SideBar.css";
-import { BsMusicPlayerFill, BsBarChartLineFill } from 'react-icons/bs';
+import { BsMusicPlayerFill} from 'react-icons/bs';
 import {  FiLogOut} from "react-icons/fi";
 const Menuitem = styled(MenuItem)`
   :hover {
@@ -55,7 +55,7 @@ const SideBar = () => {
       <SidebarContent>
       <Menu >
         <Menuitem icon={<FaHome />}><a href="/" style={{styles}}>Home</a></Menuitem>
-        <Menuitem icon={<BsBarChartLineFill />} ><a href="/" style={{color:"white"}}>장르별 음악</a> </Menuitem>        
+        <Menuitem icon={<FaThList />} ><a href="/" style={{color:"white"}}>장르별 음악</a> </Menuitem>        
         <Menuitem icon={<FaColumns />}><a href="/download" style={{color:"white"}}>다운로드</a> </Menuitem>
         <div style={{background:"#7B83EB"}}>
         <SubMenu title="내 음원" icon={<FaUserTie />} >
