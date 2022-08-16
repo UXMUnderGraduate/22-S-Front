@@ -16,7 +16,7 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom';
-
+import { Visibility} from '@mui/icons-material';
 function RegisterPage () {
   const theme = createTheme();
   const [checked, setChecked] = useState(false);
@@ -30,11 +30,11 @@ function RegisterPage () {
 
   const onhandlePost = async (data) => {
     const { email, name, password } = data;
-    const postData = { email, name, password };
+    const postData = { email, name, password, joinType };
 
     // post
     await axios
-      .post('/member/join', postData)
+      .post('http://localhost:5000/api/v1/auth/signup', postData)
       .then(function (response) {
         console.log(response, '성공');
         navigate.push('/login');
@@ -115,6 +115,11 @@ function RegisterPage () {
       onhandlePost(joinData);
     }
   };
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePass = (e) => {
+    e.preventDefault()
+    setShowPassword(!showPassword)
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -158,6 +163,7 @@ function RegisterPage () {
                     id="name"
                     name="name"
                     label="이름"
+                    variant="standard"
                     error={nameError !== '' || false}
                   />
                 </Grid>
@@ -171,6 +177,7 @@ function RegisterPage () {
                     type="nickname"
                     id="nickname"
                     name="nickname"
+                    variant="standard"
                     label="예명/닉네임" />
                 </Grid>
 
@@ -183,23 +190,30 @@ function RegisterPage () {
                     id="email"
                     name="email"
                     label="이메일 주소"
+                    variant="standard"
                     error={emailError !== '' || false}
                   />
                 </Grid>
                 <FormHelperText>{emailError}</FormHelperText>
-
-                <Grid item xs={12}>
-                  <TextField
+              
+                <Grid item xs={11} >
+                <TextField
                     required
                     fullWidth
-                    type="password"
+                    type={showPassword ? 'password' : 'text'}
                     id="password"
                     name="password"
                     label="비밀번호 (숫자+영문자+특수문자 8자리 이상)"
-                    error={passwordState !== '' || false}
-                  />
-                </Grid>
-                <FormHelperText>{passwordState}</FormHelperText>
+                    variant="standard"
+                    error={passwordState !== '' || false}>
+                    
+                    </TextField>
+              </Grid>
+              <FormHelperText>{passwordState}</FormHelperText>
+
+              <Grid item xs={1}>
+              <button onClick={togglePass} style={{background:"none", border:"none",marginLeft:"-10px", marginTop:"15px"}}><Visibility/></button>
+              </Grid>
 
                 <Grid item xs={12}>
                   <TextField
@@ -209,6 +223,7 @@ function RegisterPage () {
                     id="rePassword"
                     name="rePassword"
                     label="비밀번호 재입력"
+                    variant="standard"
                     error={passwordError !== '' || false}
                   />
                 </Grid>
@@ -220,7 +235,8 @@ function RegisterPage () {
                   name="metamask" 
                   type="password"
                   required 
-                  fullWidth/> 
+                  fullWidth
+                  variant="standard"/> 
                 </Grid>
 
                 <Grid item xs={12}>
@@ -235,8 +251,9 @@ function RegisterPage () {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 2, mb: 2 }}
                 size="large"
+                style={{backgroundColor:"#7A84EB", height:'60px', fontSize:"20px"}}
               >
                 회원가입
               </Button>
