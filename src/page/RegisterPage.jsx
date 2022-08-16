@@ -30,7 +30,7 @@ function RegisterPage () {
 
   const onhandlePost = async (data) => {
     const { email, name, password } = data;
-    const postData = { email, name, password, joinType };
+    const postData = { email, name, password, userType };
 
     // post
     await axios
