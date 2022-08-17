@@ -1,5 +1,4 @@
 import React from 'react';
-// import { useNavigate } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
 import {
   AppBar,
@@ -12,12 +11,17 @@ import {
   Menu,
   ListItemButton,
   Button,
-} from '@mui/material/';
+  ThemeProvider,
+  createTheme,
+} from '@mui/material';
+// import { useNavigate } from 'react-router-dom';
+
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
+//검색창
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -61,6 +65,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function Header() {
   // const Navigate = useNavigate();
 
+  const theme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+    header: {
+      main: 'transparent',
+    },
+  });
+
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
@@ -99,8 +112,8 @@ export default function Header() {
     </Menu>
   );
   return (
-    <Box>
-      <AppBar position="static">
+    <ThemeProvider theme={theme}>
+      <AppBar position="static" color="header" elevation={0}>
         <Toolbar variant="dense">
           <Button
           // onClick={() => {
@@ -157,6 +170,6 @@ export default function Header() {
         </Toolbar>
       </AppBar>
       {renderMenu}
-    </Box>
+    </ThemeProvider>
   );
 }
