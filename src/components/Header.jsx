@@ -10,11 +10,10 @@ import {
   MenuItem,
   Menu,
   ListItemButton,
-  Button,
   ThemeProvider,
   createTheme,
 } from '@mui/material';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -63,7 +62,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Header() {
-  // const Navigate = useNavigate();
+  const Navigate = useNavigate();
 
   const theme = createTheme({
     palette: {
@@ -102,38 +101,32 @@ export default function Header() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem
-      // onClick={() => {
-      //   Navigate('/login');
-      // }}
-      >
-        Log out
-      </MenuItem>
+      <MenuItem>Log out</MenuItem>
     </Menu>
   );
   return (
     <ThemeProvider theme={theme}>
-      <AppBar position="static" color="header" elevation={0}>
+      <AppBar position="static">
         <Toolbar variant="dense">
-          <Button
-          // onClick={() => {
-          //   Navigate('/home');
-          // }}
-          >
-            <Box src="logo/logo_transparent.png" component="img" sx={{ width: 50 }} />
-          </Button>
+          {/*<Button*/}
+          {/*  onClick={() => {*/}
+          {/*    Navigate('/board');*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*</Button>*/}
           <Box sx={{ display: 'inline-' }}>
             <ListItemButton
-            // onClick={() => {
-            //   Navigate('/home');
-            // }}
+              onClick={() => {
+                Navigate('/board');
+              }}
             >
+            <Box src="logo/logo_transparent.png" component="img" sx={{ width: 50 ,paddingRight:"15%" }} />
               Home
             </ListItemButton>
             <ListItemButton
-            // onClick={() => {
-            //   Navigate('/library');
-            // }}
+              onClick={() => {
+                Navigate('/library');
+              }}
             >
               Library
             </ListItemButton>

@@ -1,9 +1,8 @@
-import { Box } from '@mui/material';
-import * as React from 'react';
-import BoardList2 from '../components/BoardList2';
-import BackgroundVideo from '../components/BackgroundVideo';
-import Header from '../components/Header';
-import BoardGrid from '../components/BoardGrid';
+import React from 'react';
+import {Box} from "@mui/material";
+import BackgroundVideo from "../components/BackgroundVideo";
+import BoardGrid from "../components/BoardGrid";
+import Header from "../components/Header";
 
 const dummyData = [
   {
@@ -132,17 +131,14 @@ const dummyData = [
   },
 ];
 
-const BoardPage = () => {
+function LibraryPage() {
   return (
     <Box sx={{ height: '100%', zIndex: 0 }}>
       <BackgroundVideo />
-
-      <Header />
-      <Box sx={{ m: 5, width: '100%' }}>
-        <BoardList2 data={dummyData} />
-        <BoardGrid data={dummyData} />
-      </Box>
+      <Header/>
+      <BoardGrid data = {dummyData}/>
     </Box>
   );
-};
-export default BoardPage;
+}
+
+export default LibraryPage;
