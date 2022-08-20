@@ -160,7 +160,7 @@ function RegisterPage() {
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <Select
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white' ,borderRadius: "0.3em",}}
                       labelId="registerType"
                       id="register-select"
                       value={userType}
@@ -175,7 +175,7 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white',borderRadius: "0.5em", }}
                       required
                       autoFocus
                       fullWidth
@@ -191,7 +191,7 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white' ,borderRadius: "0.5em", }}
                       required
                       autoFocus
                       fullWidth
@@ -205,7 +205,7 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white',borderRadius: "0.5em", }}
                       required
                       autoFocus
                       fullWidth
@@ -221,7 +221,7 @@ function RegisterPage() {
 
                   <Grid item xs={11}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white',borderRadius: "0.5em", }}
                       required
                       fullWidth
                       type={showPassword ? 'password' : 'text'}
@@ -244,6 +244,7 @@ function RegisterPage() {
                         marginLeft: '-10px',
                         marginTop: '15px',
                         color: '#ffffff',
+                        borderRadius: "0.5em",
                       }}
                     >
                       <Visibility />
@@ -252,7 +253,7 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white',borderRadius: "0.5em", }}
                       required
                       fullWidth
                       type="password"
@@ -267,7 +268,7 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white' ,borderRadius: "0.5em",}}
                       label="metamask wallet Adress"
                       name="metamask"
                       type="password"
