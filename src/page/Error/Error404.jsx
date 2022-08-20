@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, createTheme, ThemeProvider, Typography } from '@mui/material';
 
-function Error400() {
+function Error404() {
   const theme = createTheme({
     palette: {
       primary: {
@@ -29,4 +29,4 @@ function Error400() {
   );
 }
 
-export default Error400;
+export default Error404;
