@@ -1,11 +1,10 @@
 import { Card, CardActionArea, CardMedia, CardContent, Typography, Box } from '@mui/material';
-import PropTypes from 'prop-types'
-
-BoardItem.prototype = {
-  props: PropTypes.node
-}
+// import PropTypes from 'prop-types';
 
 const BoardItem = (props) => {
+  // BoardItem.prototype = {
+  //   props: PropTypes.node,
+  // };
   return (
     <Box>
       <Card variant="div" sx={{ display: 'inline-block' }}>
