@@ -36,7 +36,7 @@ function LoginPage() {
               Login
             </Typography>
             <TextField
-              sx={{ backgroundColor: 'white' }}
+              sx={{ backgroundColor: 'white', borderRadius: "0.5em", }}
               color="secondary"
               margin="normal"
               label="Email Address"
@@ -48,7 +48,7 @@ function LoginPage() {
               autoFocus
             />
             <TextField
-              sx={{ backgroundColor: 'white' }}
+              sx={{ backgroundColor: 'white' , borderRadius: "0.5em",}}
               color="secondary"
               margin="normal"
               label="Password"
