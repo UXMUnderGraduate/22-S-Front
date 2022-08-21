@@ -99,8 +99,8 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={() => Navigate('/profile')}>My account</MenuItem>
+      <MenuItem onClick={() => Navigate('/upload')}>Upload</MenuItem>
       <MenuItem>Log out</MenuItem>
     </Menu>
   );
@@ -108,19 +108,13 @@ export default function Header() {
     <ThemeProvider theme={theme}>
       <AppBar position="static">
         <Toolbar variant="dense">
-          {/*<Button*/}
-          {/*  onClick={() => {*/}
-          {/*    Navigate('/board');*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*</Button>*/}
           <Box sx={{ display: 'inline-' }}>
             <ListItemButton
               onClick={() => {
                 Navigate('/board');
               }}
             >
-            <Box src="logo/logo_transparent.png" component="img" sx={{ width: 50 ,paddingRight:"15%" }} />
+              <Box src="logo/logo_transparent.png" component="img" sx={{ width: 50, paddingRight: '15%' }} />
               Home
             </ListItemButton>
             <ListItemButton
