@@ -29,7 +29,6 @@ function Error403() {
           </Button>
         </Box>
       </Box>
-      =
     </ThemeProvider>
   );
 }
