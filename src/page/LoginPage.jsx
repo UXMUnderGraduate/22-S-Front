@@ -36,7 +36,7 @@ function LoginPage() {
               Login
             </Typography>
             <TextField
-              sx={{ backgroundColor: 'white', borderRadius: "0.5em", }}
+              sx={{ backgroundColor: 'white', borderRadius: '0.5em' }}
               color="secondary"
               margin="normal"
               label="Email Address"
@@ -48,7 +48,7 @@ function LoginPage() {
               autoFocus
             />
             <TextField
-              sx={{ backgroundColor: 'white' , borderRadius: "0.5em",}}
+              sx={{ backgroundColor: 'white', borderRadius: '0.5em' }}
               color="secondary"
               margin="normal"
               label="Password"
@@ -76,23 +76,18 @@ function LoginPage() {
               sx={{ mt: 3, mb: 2 }}
               style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
             >
-              {' '}
-              로그인{' '}
+              로그인
             </Button>
             <Grid container>
               <Grid item xs>
-                {' '}
                 <Link href="/register" style={{ color: '#B73DCC', textDecoration: 'none' }}>
-                  {' '}
-                  회원가입{' '}
-                </Link>{' '}
+                  회원가입
+                </Link>
               </Grid>
               <Grid item>
-                {' '}
                 <Link href="/" style={{ color: '#B73DCC', textDecoration: 'none' }}>
-                  {' '}
-                  메인으로 이동{' '}
-                </Link>{' '}
+                  메인으로 이동
+                </Link>
               </Grid>
             </Grid>
           </Box>
