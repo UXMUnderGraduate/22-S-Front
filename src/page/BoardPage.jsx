@@ -134,11 +134,10 @@ const dummyData = [
 
 const BoardPage = () => {
   return (
-    <Box sx={{ height: '100%', zIndex: 0 }}>
+    <Box sx={{ height: '100%', zIndex: 0 , overflowX:"hidden"}}>
       <BackgroundVideo />
-
       <Header />
-      <Box sx={{ m: 5, width: '100%' }}>
+      <Box sx={{width: '100%', margin:"auto" }}>
         <BoardList2 data={dummyData} />
         <BoardGrid data={dummyData} />
       </Box>
