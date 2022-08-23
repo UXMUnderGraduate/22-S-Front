@@ -10,6 +10,7 @@ import Error403 from './page/Error/Error403';
 import Error404 from './page/Error/Error404';
 import UploadPage from './page/UploadPage';
 import LibraryPage from './page/LibraryPage';
+import ProfilePage from "./page/ProfilePage";
 // import {useEffect, useState} from "react";
 // import axios from "axios";
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/library" element={<LibraryPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/404" element={<Error404 />} />
           <Route path="/403" element={<Error403 />} />
         </Routes>
