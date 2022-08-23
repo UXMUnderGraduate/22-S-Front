@@ -1,12 +1,24 @@
 import { Card, CardActionArea, CardMedia, CardContent, Typography, Box } from '@mui/material';
-// import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const BoardItem = (props) => {
-  // BoardItem.prototype = {
-  //   props: PropTypes.node,
-  // };
+  const Navigate = useNavigate();
+
   return (
-    <Box>
+    <Box
+      onClick={() =>
+        Navigate(`/board/${props.id}`, {
+          state: {
+            id: props.id,
+            album: props.album,
+            artistName: props.artistName,
+            img: props.img,
+            songName: props.songName,
+            playTime: props.playTime,
+          },
+        })
+      }
+    >
       <Card variant="div" sx={{ display: 'inline-block' }}>
         <CardActionArea>
           <CardMedia
