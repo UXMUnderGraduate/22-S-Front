@@ -18,6 +18,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Visibility } from '@mui/icons-material';
+import Input from '@mui/material/Input';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 function RegisterPage() {
   const theme = createTheme({
     palette: {
@@ -38,12 +43,14 @@ function RegisterPage() {
   const [passwordState, setPasswordState] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [nameError, setNameError] = useState('');
+  const [nicknameError, setNicknameError] = useState('');
+  const [walletError, setWalletError] = useState('');
   const [registerError, setRegisterError] = useState('');
   const navigate = useNavigate();
 
   const onhandlePost = async (data) => {
-    const { email, name, password } = data;
-    const postData = { email, name, password, userType };
+    const { email, name,nickname, password, wallet } = data;
+    const postData = { email, name, nickname, password, wallet, userType };
 
     // post
     await axios
@@ -79,10 +86,11 @@ function RegisterPage() {
       email: data.get('email'),
       password: data.get('password'),
       repassword: data.get('repassword'),
+      wallet: data.get('wallet'),
       regiserType: joinType,
     };
 
-    const { email, name, password, rePassword } = joinData;
+    const { email, nickname, name, password, rePassword, wallet} = joinData;
 
     //이름 확인(한글, 영어만 입력)
     const nameRegex = /^[가-힣a-zA-Z]+$/;
@@ -90,6 +98,37 @@ function RegisterPage() {
       setNameError('올바른 이름을 입력해주세요');
     } else {
       setNameError('');
+    }
+    //닉네임 확인(한글, 영어만 입력)
+    const nicknameRegex = /^[가-힣a-zA-Z]+$/;
+    if (!nicknameRegex.test(nickname) || nickname.length < 1) {
+      setNicknameError('올바른 닉네임을 입력해주세요');
+    } else {
+      setNicknameError('');
+    }
+    //메타마스트 확인(한글, 영어만 입력)
+    const walletRegex = /^[0-0a-zA-Z]+$/;
+    if (!walletRegex.test(wallet) || wallet.length < 1) {
+      setWalletError('올바른 지갑주소를 입력해주세요');
+    } else {
+      axios({
+        method: 'post',
+        url: 'http://localhost:5000/api/v1/auth/check',
+        data: {
+          wallet: e.target.value,
+        },
+      })
+      .then((res) => {
+        if (res.data !== null) {
+          setWalletError('이미 존재하는 지갑주소입니다.' );
+        } else {
+          setWalletError('');
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+      
     }
 
     //이메일 유효성 체크
@@ -117,22 +156,40 @@ function RegisterPage() {
     }
 
     //회원가입 동의 체크
-    if (!checked) alert('회원가입 약관에 동의해주세요.');
+    if (!checked) alert('올바른 양식으로 입력하고 회원가입 약관을 동의해주세요.');
 
     if (
       emailRegex.test(email) &&
       passwordRegex.test(password) &&
       password === rePassword &&
       nameRegex.test(name) &&
+      walletRegex.test(wallet) &&
       checked
     ) {
       onhandlePost(joinData);
     }
   };
-  const [showPassword, setShowPassword] = useState(false);
-  const togglePass = (e) => {
-    e.preventDefault();
-    setShowPassword(!showPassword);
+  const [values, setValues] = React.useState({
+    amount: '',
+    password: '',
+    weight: '',
+    weightRange: '',
+    showPassword: false,
+  });
+
+  const handlepasswordChange = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+
+  const handleClickShowPassword = () => {
+    setValues({
+      ...values,
+      showPassword: !values.showPassword,
+    });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
   };
 
   return (
@@ -160,7 +217,7 @@ function RegisterPage() {
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <Select
-                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                      sx={{ backgroundColor: 'white' }}
                       labelId="registerType"
                       id="register-select"
                       value={userType}
@@ -175,7 +232,7 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.5em' }}
+                      sx={{ backgroundColor: 'white' }}
                       required
                       autoFocus
                       fullWidth
@@ -183,7 +240,7 @@ function RegisterPage() {
                       id="name"
                       name="name"
                       label="이름"
-                      variant="outlined"
+                      variant="standard"
                       error={nameError !== '' || false}
                     />
                   </Grid>
@@ -191,21 +248,23 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.5em' }}
+                      sx={{ backgroundColor: 'white' }}
                       required
                       autoFocus
                       fullWidth
                       type="nickname"
                       id="nickname"
                       name="nickname"
-                      variant="outlined"
+                      variant="standard"
                       label="예명/닉네임"
+                      error={nicknameError !== '' || false}
                     />
                   </Grid>
+                  <FormHelperText>{nameError}</FormHelperText>
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.5em' }}
+                      sx={{ backgroundColor: 'white' }}
                       required
                       autoFocus
                       fullWidth
@@ -213,54 +272,48 @@ function RegisterPage() {
                       id="email"
                       name="email"
                       label="이메일 주소"
-                      variant="outlined"
+                      variant="standard"
                       error={emailError !== '' || false}
                     />
                   </Grid>
                   <FormHelperText>{emailError}</FormHelperText>
 
-                  <Grid item xs={11}>
-                    <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.5em' }}
-                      required
-                      fullWidth
-                      type={showPassword ? 'password' : 'text'}
-                      id="password"
-                      name="password"
-                      label="비밀번호 (숫자+영문자+특수문자 8자리 이상)"
-                      variant="outlined"
-                      error={passwordState !== '' || false}
-                    ></TextField>
+                  <Grid item xs={12}>
+                  <Input
+                        id="password"
+                        fullWidth
+                        placeholder='비밀번호 (숫자+영문자+특수문자 8자리 이상)*'
+                        type={values.showPassword ? 'text' : 'password'}
+                        value={values.password}
+                        onChange={handlepasswordChange('password')}
+                        error={passwordError !== '' || false}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              required
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                            >
+                              {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        label="Password"
+                      />
                   </Grid>
                   <FormHelperText>{passwordState}</FormHelperText>
 
-                  <Grid item xs={1}>
-                    <button
-                      onClick={togglePass}
-                      style={{
-                        backgroundColor: 'white',
-                        background: 'none',
-                        border: 'none',
-                        marginLeft: '-10px',
-                        marginTop: '15px',
-                        color: '#ffffff',
-                        borderRadius: '0.5em',
-                      }}
-                    >
-                      <Visibility />
-                    </button>
-                  </Grid>
-
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.5em' }}
+                      sx={{ backgroundColor: 'white' }}
                       required
                       fullWidth
                       type="password"
                       id="rePassword"
                       name="rePassword"
                       label="비밀번호 재입력"
-                      variant="outlined"
+                      variant="standard"
                       error={passwordError !== '' || false}
                     />
                   </Grid>
@@ -268,15 +321,18 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.5em' }}
-                      label="metamask wallet Adress"
-                      name="metamask"
+                      sx={{ backgroundColor: 'white' }}
+                      label="메타마스크 지갑주소"
+                      name="wallet"
+                      id="wallet"
                       type="password"
                       required
                       fullWidth
-                      variant="outlined"
+                      variant="standard"
+                      error={walletError !== '' || false}
                     />
                   </Grid>
+                  <FormHelperText>{walletError}</FormHelperText>
 
                   <Grid item xs={12}>
                     <FormControlLabel
@@ -298,9 +354,8 @@ function RegisterPage() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 2, mb: 2 }}
-                  size="large"
-                  style={{ backgroundColor: '#7A84EB', height: '60px', fontSize: '20px' }}
+                  sx={{ mt: 3, mb: 2 }}
+              style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
                 >
                   회원가입
                 </Button>
