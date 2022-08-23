@@ -49,8 +49,18 @@ const Carousel = (props) => {
         </Box>
       </Box>
       <SliderContainer ref={slideRef}>
-        {itemData.map((item) =>{
-           return<BoardItem key={item.id} img={item.img} album={item.album} artistName={item.artistName} />
+        {itemData.map((item) => {
+          return (
+            <BoardItem
+              key={item.id}
+              id={item.id}
+              img={item.img}
+              songName={item.songName}
+              playTime={item.playTime}
+              album={item.album}
+              artistName={item.artistName}
+            />
+          );
         })}
       </SliderContainer>
     </Container>

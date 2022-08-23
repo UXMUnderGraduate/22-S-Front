@@ -17,7 +17,7 @@ function Error404() {
       <Box sx={{ height: '100vh', backgroundImage: 'url(/images/background.png)' }}>
         <Box sx={{ textAlign: 'center', paddingTop: '20%' }}>
           <Typography variant="h1" component="h1" color="primary">
-            404 bad request
+            404 Not Found
           </Typography>
           <Typography variant="h4" component="h5" color="secondary" sx={{ marginTop: '3%' }}>
             {'This is not the web page you are looking for.'}
