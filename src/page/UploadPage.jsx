@@ -17,6 +17,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom';
 import { useDropzone } from "react-dropzone";
+import styled from "styled-components"
 
 
 const thumbsContainer = {
@@ -58,6 +59,104 @@ const img = {
 };
 
 
+//참여자 추가 
+const DetailDiv = styled.div`
+  div {
+    margin-bottom: 3px;
+    display: flex;
+  }
+`
+
+const CreateListDiv = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`
+
+const ComposerList = (props) => {
+  return (
+    <DetailDiv>
+      {props.countComposerList && props.countComposerList.map((item, i) => (
+        <div key={i}>
+            <div>
+
+            <Grid item xs={12} sm={8}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="name"
+                label="작곡가"
+                name="name"
+                autoComplete="name"
+                sx={{ backgroundColor: 'white' }}
+                color="secondary"
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="copyright"
+                label="저작권 비율"
+                name="copyright"
+                autoComplete="copyright"
+                sx={{ backgroundColor: 'white' }}
+                color="secondary"
+              />
+            </Grid>
+              
+            </div>
+        </div>
+      ))}
+    </DetailDiv>
+  )
+}
+
+const SingerList = (props) => {
+  return (
+    <DetailDiv>
+      {props.countSingerList && props.countSingerList.map((item, i) => (
+        <div key={i}>
+            <div>
+
+            <Grid item xs={12} sm={8}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="name"
+                label="가수"
+                name="name"
+                autoComplete="name"
+                sx={{ backgroundColor: 'white' }}
+                color="secondary"
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="copyright"
+                label="저작권 비율"
+                name="copyright"
+                autoComplete="copyright"
+                sx={{ backgroundColor: 'white' }}
+                color="secondary"
+              />
+            </Grid>
+              
+            </div>
+        </div>
+      ))}
+    </DetailDiv>
+  )
+}
+
+
 
 function UploadPage () {
 
@@ -75,7 +174,6 @@ function UploadPage () {
   
   const [checked, setChecked] = useState(false);
   const [genreType, setGenreType] = useState('R&B');
-  const [uploaderType, setUploaderType] = useState('Singer');
   const [UploadError, setUploadError] = useState('');
   const navigate = useNavigate();
 
@@ -99,9 +197,7 @@ function UploadPage () {
   const handleGenreChange = (event) => {
     setGenreType(event.target.value);
   };
-  const handleUploaderChange = (event) => {
-    setUploaderType(event.target.value);
-  };
+
   //동의체크
   const handleAgree = (event) => {
     setChecked(event.target.checked);
@@ -115,7 +211,7 @@ function UploadPage () {
     const genreType = genreType
     const uploaderType = uploaderType
     const joinData = {
-      album: data.get('album'),
+      cover: data.get('cover'),
       title: data.get('title'),
       email: data.get('email'),
       genreType: genreType,
@@ -164,7 +260,28 @@ function UploadPage () {
     [files]
   );
 
-  
+  //작곡가, 가수 추가 부분
+  const [countComposerList, setCountComposerList] = useState([0])
+
+  const onAddComposerDiv = () => {
+    let countArr = [...countComposerList]
+    let counter = countArr.slice(-1)[0]
+    counter += 1
+    countArr.push(counter)	// index 사용 X
+    // countArr[counter] = counter	// index 사용 시 윗줄 대신 사용	
+    setCountComposerList(countArr)
+  }
+
+  const [countSingerList, setCountSingerList] = useState([0])
+
+  const onAddSingerDiv = () => {
+    let countArr = [...countSingerList]
+    let counter = countArr.slice(-1)[0]
+    counter += 1
+    countArr.push(counter)	// index 사용 X
+    // countArr[counter] = counter	// index 사용 시 윗줄 대신 사용	
+    setCountSingerList(countArr)
+  }
   
 
   return (
@@ -214,7 +331,7 @@ function UploadPage () {
                 <MenuItem value={'Hiphop'}>Hiphop</MenuItem>
                 <MenuItem value={'Pop'}>Pop</MenuItem>
                 <MenuItem value={'Jazz'}>Jazz</MenuItem>
-                <MenuItem value={'rock'}>락</MenuItem>
+                <MenuItem value={'rock'}>Rock</MenuItem>
                 </Select>
                 </Grid>
 
@@ -244,69 +361,34 @@ function UploadPage () {
                 </Grid>
 
                 <Grid item xs={12}>
-                <p style={{color:"white"}}>음원 업로드</p>
+                <label style={{color:"white"}}>음원 업로드<br/></label>
                 <input 
                     type="file" 
                     accept='music/mp3, music/mp4, music/flac, music/ogg, music/mp2, music/m4r'
                     textDecoration="none"
                     style={{color:"white", borderBox:"white"}}  />
                 </Grid>
-
-                <Grid item xs={12} sm={3}>
-                <Select
-                  labelId="uploaderType"
-                  id="Upload-select"
-                  value={uploaderType}
-                  required
-                  label="uploaderType"
-                  onChange={handleUploaderChange}
-                  variant="outlined"
-                  sx={{ backgroundColor: 'white' }}
-                  color="secondary"
-                >
-                <MenuItem value={'Singer'}>가수</MenuItem>
-                <MenuItem value={'Composer'}>작곡가</MenuItem>
-                <MenuItem value={'Arranger'}>편곡가</MenuItem>
-                </Select>
-            </Grid>
-            <Grid item xs={12} sm={5}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="name"
-                label="이름"
-                name="name"
-                autoComplete="name"
-                sx={{ backgroundColor: 'white' }}
-                color="secondary"
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="copyright"
-                label="저작권 비율"
-                name="copyright"
-                autoComplete="copyright"
-                sx={{ backgroundColor: 'white' }}
-                color="secondary"
-              />
-            </Grid>
-
                 <Grid item xs={12}>
-                <TextField
-                  label="가사"
-                  multiline
-                  rows={5}
-                  fullWidth
-                  sx={{ backgroundColor: 'white' }}
-                  color="secondary"
-                />
+                <label style={{color:'white'}}>참여 가수</label>
+                <CreateListDiv>
+                  <div style={{display:"inline-block"}}>
+                  <SingerList countSingerList={countSingerList} />
+                  <Button onClick={onAddSingerDiv} style={{backgroundColor:"#7966ce", color:"white"}}>
+                    추가
+                  </Button></div>
+                </CreateListDiv>
                 </Grid>
                 
+                <Grid item xs={12}>
+                <CreateListDiv>
+                  <div style={{display:"inline-block"}}>
+                  <label style={{color:'white'}}>참여 작곡가</label>
+                  <ComposerList countComposerList={countComposerList} />
+                  <Button onClick={onAddComposerDiv} style={{backgroundColor:"#7966ce", color:"white"}}>
+                    추가
+                  </Button></div>
+                </CreateListDiv>
+                </Grid>               
 
                 <Grid item xs={12}>              
                   <FormControlLabel
