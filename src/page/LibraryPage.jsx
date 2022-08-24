@@ -1,8 +1,9 @@
 import React from 'react';
-import {Box} from "@mui/material";
-import BackgroundVideo from "../components/BackgroundVideo";
-import BoardGrid from "../components/BoardGrid";
-import Header from "../components/Header";
+import { Box } from '@mui/material';
+import BackgroundVideo from '../components/BackgroundVideo';
+import ListItem from '../components/ListItem';
+import Header from '../components/Header';
+import styled from 'styled-components';
 
 const dummyData = [
   {
@@ -72,32 +73,6 @@ const dummyData = [
   },
 
   {
-    id: 9,
-
-    img: '/images/test1.png',
-    songName: '곡제목9',
-    album: '엘범제목9',
-    artistName: '생산자9',
-    playTime: '1:00',
-  },
-  {
-    id: 10,
-    img: '/images/test1.png',
-    songName: '곡제목10',
-    album: '엘범제목10',
-    artistName: '생산자10',
-    playTime: '1:00',
-  },
-
-  {
-    id: 11,
-    img: '/images/test1.png',
-    songName: '곡제목11',
-    album: '엘범제목11',
-    artistName: '생산자11',
-    playTime: '1:00',
-  },
-  {
     id: 12,
     img: '/images/test2.png',
     songName: '곡제목12',
@@ -135,10 +110,32 @@ function LibraryPage() {
   return (
     <Box sx={{ height: '100%', zIndex: 0 }}>
       <BackgroundVideo />
-      <Header/>
-      <BoardGrid data = {dummyData}/>
+      <Header />
+      <Tpbox>
+        {dummyData.map((item) => {
+          return (
+            <ListItem
+              key={item.id}
+              id={item.id}
+              img={item.img}
+              songName={item.songName}
+              playTime={item.playTime}
+              album={item.album}
+              artistName={item.artistName}
+            />
+          );
+        })}
+      </Tpbox>
     </Box>
   );
 }
 
 export default LibraryPage;
+
+const Tpbox = styled.div`
+  font-weight: bold;
+  padding: 0.5%;
+  text-align: center;
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.3);
+`;
