@@ -49,7 +49,7 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const onhandlePost = async (data) => {
-    const { email, name,nickname, password, wallet } = data;
+    const { email, name, nickname, password, wallet } = data;
     const postData = { email, name, nickname, password, wallet, userType };
 
     // post
@@ -90,7 +90,7 @@ function RegisterPage() {
       regiserType: joinType,
     };
 
-    const { email, nickname, name, password, rePassword, wallet} = joinData;
+    const { email, nickname, name, password, rePassword, wallet } = joinData;
 
     //이름 확인(한글, 영어만 입력)
     const nameRegex = /^[가-힣a-zA-Z]+$/;
@@ -118,17 +118,16 @@ function RegisterPage() {
           wallet: e.target.value,
         },
       })
-      .then((res) => {
-        if (res.data !== null) {
-          setWalletError('이미 존재하는 지갑주소입니다.' );
-        } else {
-          setWalletError('');
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-      
+        .then((res) => {
+          if (res.data !== null) {
+            setWalletError('이미 존재하는 지갑주소입니다.');
+          } else {
+            setWalletError('');
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
 
     //이메일 유효성 체크
@@ -217,7 +216,7 @@ function RegisterPage() {
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <Select
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
                       labelId="registerType"
                       id="register-select"
                       value={userType}
@@ -232,7 +231,7 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
                       required
                       autoFocus
                       fullWidth
@@ -248,7 +247,7 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
                       required
                       autoFocus
                       fullWidth
@@ -264,7 +263,7 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
                       required
                       autoFocus
                       fullWidth
@@ -279,34 +278,36 @@ function RegisterPage() {
                   <FormHelperText>{emailError}</FormHelperText>
 
                   <Grid item xs={12}>
-                  <Input
-                        id="password"
-                        fullWidth
-                        placeholder='비밀번호 (숫자+영문자+특수문자 8자리 이상)*'
-                        type={values.showPassword ? 'text' : 'password'}
-                        value={values.password}
-                        onChange={handlepasswordChange('password')}
-                        error={passwordError !== '' || false}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              required
-                              onClick={handleClickShowPassword}
-                              onMouseDown={handleMouseDownPassword}
-                              edge="end"
-                            >
-                              {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                          </InputAdornment>
-                        }
-                        label="Password"
-                      />
+                    <Input
+                      id="password"
+                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                      fullWidth
+                      placeholder="비밀번호 (숫자+영문자+특수문자 8자리 이상)*"
+                      type={values.showPassword ? 'text' : 'password'}
+                      value={values.password}
+                      onChange={handlepasswordChange('password')}
+                      error={passwordError !== '' || false}
+                      variant="standard"
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            required
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      label="Password"
+                    />
                   </Grid>
                   <FormHelperText>{passwordState}</FormHelperText>
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
                       required
                       fullWidth
                       type="password"
@@ -321,7 +322,7 @@ function RegisterPage() {
 
                   <Grid item xs={12}>
                     <TextField
-                      sx={{ backgroundColor: 'white' }}
+                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
                       label="메타마스크 지갑주소"
                       name="wallet"
                       id="wallet"
@@ -355,7 +356,7 @@ function RegisterPage() {
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
-              style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
+                  style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
                 >
                   회원가입
                 </Button>
