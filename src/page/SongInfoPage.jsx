@@ -4,11 +4,11 @@ import { useLocation } from 'react-router-dom';
 
 export default function SongInfo() {
   const { state } = useLocation();
-  const { songName, artistName, album } = state;
+  const { songName, artistName, album, playTime } = state;
 
   console.log(state);
   return (
-    <Box sx={{ height: '100vh', backgroundImage: 'url(/images/background.png)', textAlign: 'center' }}>
+    <Box sx={{ height: '100%', backgroundImage: 'url(/images/background.png)', textAlign: 'center' }}>
       <Typography variant="h4" component="h4" sx={{ paddingTop: '8%' }}>
         {songName}
       </Typography>
@@ -17,15 +17,22 @@ export default function SongInfo() {
       </Typography>
       <Card
         sx={{
-          width: '50vw',
-          height: '50vw',
+          width: '20vw',
+          height: '20vw',
           marginTop: '2%',
-          marginLeft: '25%',
+          marginLeft: '40%',
           backgroundImage: `url(${state.img})`,
           backgroundSize: 'cover',
         }}
       ></Card>
       {album}
+      <Typography
+        variant="h6"
+        component="h6"
+        sx={{ paddingTop: '5%', paddingBottom: '10%', marginLeft: '35%', width: '30vw' }}
+      >
+        {playTime}
+      </Typography>
     </Box>
   );
 }

@@ -9,7 +9,7 @@ import Carousel from './Carousel';
 const BoardList2 = (props) => {
   const itemData = props.data;
   return (
-    <Container sx={{paddingTop: "2%"}}>
+    <Container sx={{ paddingTop: '2%' }}>
       <Carousel data={itemData} />
     </Container>
   );

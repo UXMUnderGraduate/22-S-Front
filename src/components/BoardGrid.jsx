@@ -15,10 +15,9 @@ const BoardGrid = (props) => {
     <Container sx={{ width: '100vw}' }}>
       <Tpbox>
         <Box sx={{ display: 'flex', paddingTop: '1%', textAlign: 'center', margin: '1%' }}>
-          <Box sx={{ width: '25%' }}>곡명</Box>
-          <Box sx={{ width: '25%' }}>아티스트</Box>
-          <Box sx={{ width: '25%' }}>엘범명</Box>
-          <Box sx={{ width: '25%' }}>시간</Box>
+          <Box sx={{ width: '33%' }}>곡명</Box>
+          <Box sx={{ width: '33%' }}>아티스트</Box>
+          <Box sx={{ width: '33%' }}>엘범명</Box>
         </Box>
         {itemData.map((item) => {
           return (
