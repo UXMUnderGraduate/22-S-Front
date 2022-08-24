@@ -15,9 +15,10 @@ import {
   createTheme,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+// import axios from 'axios';
 
 // 모달창
 const style = {
@@ -73,6 +74,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const ariaLabel = { 'aria-label': 'search' };
+
 export default function Header() {
   const Navigate = useNavigate();
 
@@ -84,6 +87,23 @@ export default function Header() {
       main: 'transparent',
     },
   });
+
+  const [search, setSearch] = useState('');
+  const onChangeSearch = (e) => {
+    e.preventDefault();
+    setSearch(e.target.value);
+  };
+  console.log(search);
+
+  // const onSearch = (e) => {
+  //   e.preventDefault();
+  //   if (search===null || search===""){
+  //     axios.get()
+  //     .then((res) => {
+  //       setList(res.data.userList)
+  //       setCurrentPosts(res.data.userList.slice(indexOfFirstPost, indexOfLastPost))
+
+  // const [list , setList] = useState([]); 
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -166,7 +186,7 @@ export default function Header() {
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
+            <StyledInputBase placeholder="Search…" inputProps={ariaLabel} onChange={onChangeSearch} />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box>
