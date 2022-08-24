@@ -7,7 +7,6 @@ import {
   IconButton,
   Modal,
   InputBase,
-  Badge,
   MenuItem,
   Menu,
   Typography,
@@ -19,8 +18,6 @@ import { useNavigate } from 'react-router-dom';
 
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 
 // 모달창
 const style = {
@@ -173,16 +170,6 @@ export default function Header() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box>
-            <IconButton size="large" aria-label="badgeContent 값을 바꿔 알림수를 알려준다" color="inherit">
-              <Badge badgeContent={10} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton size="large" aria-label="badgeContent 값을 바꿔 알림수를 알려준다" color="inherit">
-              <Badge badgeContent={14} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
             <IconButton
               size="large"
               edge="end"
