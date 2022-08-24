@@ -18,7 +18,7 @@ export default function SongInfo() {
       <Card
         sx={{
           width: '50vw',
-          height: '50vh',
+          height: '50vw',
           marginTop: '2%',
           marginLeft: '25%',
           backgroundImage: `url(${state.img})`,
