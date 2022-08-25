@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import { Grid, Typography, Box, Container, createTheme, ThemeProvider } from '@mui/material';
-
+import { useNavigate } from 'react-router-dom';
 function LoginPage() {
   const theme = createTheme({
     palette: {
@@ -17,6 +17,7 @@ function LoginPage() {
       },
     },
   });
+  const Navigate = useNavigate();
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ height: '100vh', backgroundImage: 'url(/images/background.png)' }}>
@@ -80,14 +81,22 @@ function LoginPage() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/register" style={{ color: '#B73DCC', textDecoration: 'none' }}>
-                  회원가입
-                </Link>
+              <Link
+                onClick={() => {
+                  Navigate('/register');
+                }}
+              >
+                {'회원가입'}
+              </Link>
               </Grid>
               <Grid item>
-                <Link href="/" style={{ color: '#B73DCC', textDecoration: 'none' }}>
-                  메인으로 이동
-                </Link>
+              <Link
+                onClick={() => {
+                  Navigate('/');
+                }}
+              >
+                {'메인으로 이동'}
+              </Link>
               </Grid>
             </Grid>
           </Box>
