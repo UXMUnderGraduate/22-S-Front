@@ -152,6 +152,6 @@ function LoginPage() {
       </Box>
     </ThemeProvider>
   );
-}
+}  
 
 export default LoginPage;
