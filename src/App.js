@@ -22,7 +22,7 @@ const dummyData = [
     songName: '곡제목1',
     album: '엘범제목1',
     artistName: '생산자1',
-    playTime: '1:00',
+    playTime: '가사입니다 가사입니다 가사입니다 가사입니다 가사입니다 가사입니다 가사입니다 가사입니다',
   },
   {
     id: 2,

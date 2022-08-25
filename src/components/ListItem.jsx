@@ -20,10 +20,9 @@ export default function ListItem(props) {
         })
       }
     >
-      <Box sx={{ width: '25%' }}>{props.songName}</Box>
-      <Box sx={{ width: '25%' }}>{props.artistName}</Box>
-      <Box sx={{ width: '25%' }}>{props.album}</Box>
-      <Box sx={{ width: '25%' }}>{props.playTime}</Box>
+      <Box sx={{ width: '33%' }}>{props.songName}</Box>
+      <Box sx={{ width: '33%' }}>{props.artistName}</Box>
+      <Box sx={{ width: '33%' }}>{props.album}</Box>
     </Box>
   );
 }
