@@ -319,7 +319,7 @@ function RegisterPage () {
                 type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 3, mb: 4 }}
+                  sx={{ mt: 3, mb: 2 }}
                   style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px'}}
                 >
                 회원가입
