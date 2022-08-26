@@ -269,7 +269,7 @@ function RegisterPage() {
                       style={{
                         backgroundColor: 'white',
                         background: '#7966ce',
-                        border: 'none',
+                        border: 'none',      
                         borderRadius: '5px',
                         color: '#ffffff',
                         float: 'right',
