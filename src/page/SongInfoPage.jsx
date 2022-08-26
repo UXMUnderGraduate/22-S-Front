@@ -8,7 +8,7 @@ export default function SongInfo() {
 
   console.log(state);
   return (
-    <Box sx={{ height: '100%', backgroundImage: 'url(/images/background.png)', textAlign: 'center' }}>
+    <Box sx={{ height: '100vh', backgroundImage: 'url(/images/background.png)', textAlign: 'center' }}>
       <Typography variant="h4" component="h4" sx={{ paddingTop: '8%' }}>
         {songName}
       </Typography>
