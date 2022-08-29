@@ -40,7 +40,11 @@ export const deployContract = {
     return deployedSellerContract;
   },
   settlement: async (scAddress, addresses, proportions, songCid, price) => {
-    const args = [scAddress, addresses, proportions, Web3.utils.toHex(songCid), price];
+    const bytes = [
+      Web3.utils.padRight(Web3.utils.toHex(songCid.substr(0, 32)), 64),
+      Web3.utils.padRight(Web3.utils.toHex(songCid.substr(32)), 64),
+    ];
+    const args = [scAddress, addresses, proportions, bytes, price];
     const deployedSettleContract = await deployContract.deploy(abiSettle, bytecodeSettle, metamask.account, args);
     console.log(`Settlement contract deployed: ${deployedSettleContract.options.address}`);
     return deployedSettleContract;
@@ -107,7 +111,10 @@ export const settlementContract = {
       return settlementContract.instance.methods.price().call();
     },
     getSongCid: async () => {
-      return settlementContract.instance.methods.songCid().call();
+      return Web3.utils.hexToString(
+        (await settlementContract.instance.methods.songCid(0).call()) +
+          (await settlementContract.instance.methods.songCid(1).call()).substr(2),
+      );
     },
   },
   event: {
@@ -120,7 +127,7 @@ export const settlementContract = {
           name: 'buyer',
         },
         {
-          type: 'bytes32',
+          type: 'bytes32[2]',
           name: 'songCid',
         },
         {
@@ -140,7 +147,7 @@ export const settlementContract = {
           name: 'receiver',
         },
         {
-          type: 'bytes32',
+          type: 'bytes32[2]',
           name: 'songCid',
         },
         {
