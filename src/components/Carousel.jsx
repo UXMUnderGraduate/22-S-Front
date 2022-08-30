@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import BoardItem from './BoardItem';
 import { Box, IconButton, Typography } from '@mui/material';
@@ -7,9 +7,9 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 const Carousel = (props) => {
   const TOTAL_SLIDES = 2; // 전체 슬라이드 개수(총3개. 배열로 계산)
-  const itemData = props.data;
+  // const itemData = props.data;
   const [currentSlide, setCurrentSlide] = useState(0);
-  const slideRef = useRef(null);
+  // const slideRef = useRef(null);
 
   // Next 버튼 클릭 시
   const NextSlide = () => {
@@ -28,10 +28,10 @@ const Carousel = (props) => {
     }
   };
   //캐러셀효과
-  useEffect(() => {
-    slideRef.current.style.transition = 'all 0.5s ease-in-out';
-    slideRef.current.style.transform = `translateX(-${currentSlide}00%)`;
-  }, [currentSlide]);
+  // useEffect(() => {
+  //   slideRef.current.style.transition = 'all 0.5s ease-in-out';
+  //   slideRef.current.style.transform = `translateX(-${currentSlide}00%)`;
+  // }, [currentSlide]);
 
   return (
     <Container>
@@ -48,8 +48,9 @@ const Carousel = (props) => {
           </IconButton>
         </Box>
       </Box>
-      <SliderContainer ref={slideRef}>
-        {itemData.map((item) => {
+      {console.log(props.data)}
+      {/* <SliderContainer ref={slideRef}> */}
+        {props.data.map((item) => {
           return (
             <BoardItem
               key={item.id}
@@ -62,7 +63,7 @@ const Carousel = (props) => {
             />
           );
         })}
-      </SliderContainer>
+      {/* </SliderContainer> */}
     </Container>
   );
 };
@@ -72,7 +73,7 @@ const Container = styled.div`
   margin: auto;
   overflow: hidden;
 `;
-const SliderContainer = styled.div`
-  margin: 0 auto;
-  display: flex;
-`;
+// const SliderContainer = styled.div`
+//   margin: 0 auto;
+//   display: flex;
+// `;
