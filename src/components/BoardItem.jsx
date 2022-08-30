@@ -10,11 +10,9 @@ const BoardItem = (props) => {
         Navigate(`/board/${props.id}`, {
           state: {
             id: props.id,
-            album: props.album,
-            artistName: props.artistName,
+            title: props.title,
             img: props.img,
-            songName: props.songName,
-            playTime: props.playTime,
+            artist: props.artist,
           },
         })
       }
@@ -29,9 +27,9 @@ const BoardItem = (props) => {
           />
           <CardContent>
             <Typography gutterBottom variant="h6" component="div">
-              {props.album}
+              {props.title}
             </Typography>
-            <Typography color="text.secondary">{props.artistName}</Typography>
+            <Typography color="text.secondary">{props.artist}</Typography>
           </CardContent>
         </CardActionArea>
       </Card>

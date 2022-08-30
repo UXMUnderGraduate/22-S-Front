@@ -7,10 +7,10 @@ import Carousel from './Carousel';
 // };
 
 const BoardList2 = (props) => {
-  const itemData = props.data;
+  console.log(props.data);
   return (
     <Container sx={{ paddingTop: '2%' }}>
-      <Carousel data={itemData} />
+      <Carousel data={props.data} />
     </Container>
   );
 };

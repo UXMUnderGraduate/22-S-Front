@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function ListItem(props) {
+  console.log(props.id);
   const Navigate = useNavigate();
   return (
     <Box
@@ -11,18 +12,13 @@ export default function ListItem(props) {
         Navigate(`/board/${props.id}`, {
           state: {
             id: props.id,
-            album: props.album,
-            artistName: props.artistName,
-            img: props.img,
-            songName: props.songName,
-            playTime: props.playTime,
           },
         })
       }
     >
-      <Box sx={{ width: '33%' }}>{props.songName}</Box>
-      <Box sx={{ width: '33%' }}>{props.artistName}</Box>
-      <Box sx={{ width: '33%' }}>{props.album}</Box>
+      <Box sx={{ width: '33%' }}>{props.title}</Box>
+      <Box sx={{ width: '33%' }}>{props.artist}</Box>
+      <Box sx={{ width: '33%' }}>{props.genre}</Box>
     </Box>
   );
 }
