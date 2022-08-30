@@ -19,6 +19,7 @@ import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
 // 모달창
 const style = {
@@ -94,21 +95,20 @@ export default function Header() {
   };
   // console.log(search);
 
-  const [list , setList] = useState([]); 
+  const [list, setList] = useState([]);
 
   const onSearch = (e) => {
     e.preventDefault();
-    if (search===null || search===""){
-      axios.get()
-      .then((res) => {
-        setList(res.data.userList)
-      })}
-    else {
-      const filterData = list.filter((row) => row.userId.includes(search))
-      setList(filterData)
+    if (search === null || search === '') {
+      axios.get().then((res) => {
+        setList(res.data.userList);
+      });
+    } else {
+      const filterData = list.filter((row) => row.userId.includes(search));
+      setList(filterData);
     }
-    setSearch("");
-  }
+    setSearch('');
+  };
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -122,9 +122,20 @@ export default function Header() {
     setAnchorEl(null);
   };
 
+  const COOKIE_KEY = window.LOGIN_KEY;
+
+  const logoutURL = `/`;
+
+  const [, , removeCookie] = useCookies([COOKIE_KEY]);
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleLogout = () => {
+    removeCookie(COOKIE_KEY, { path: '/' });
+    window.location.href = logoutURL;
+  };
 
   const renderMenu = (
     <Menu
@@ -163,7 +174,7 @@ export default function Header() {
           </Typography>
         </Box>
       </Modal>
-      <MenuItem>Log out</MenuItem>
+      <MenuItem onClick={handleLogout}>Log out</MenuItem>
     </Menu>
   );
   return (
@@ -187,7 +198,7 @@ export default function Header() {
               Library
             </ListItemButton>
           </Box>
-          <Search onSubmit={e => onSearch(e)}>
+          <Search onSubmit={(e) => onSearch(e)}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
