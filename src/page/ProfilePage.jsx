@@ -1,24 +1,37 @@
-import React from 'react';
+import * as React from 'react';
 import { Box, ThemeProvider, Typography } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import MyProfile from '../components/MyProfile';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 // import styled from "styled-components";
 
 function ProfilePage() {
   const theme = createTheme({
     main: '#ffffff',
   });
-  const items = [
-    {
-      id: 1,
-      email: 'hsj106@mju.ac.kr',
-      name: '홍길동',
-      type: 'General',
-      nickname: '아이유',
-      wallet: '0x9b234F7b778F2dff92d8338fbB9D5b3cE8636021',
-    },
-  ];
+  const [data, setData] = useState('');
+
+  const getRes = async () => {
+    const token = localStorage.getItem('jwtToken');
+    await axios
+      .get('http://localhost:9494/api/v1/user', {
+        headers: {
+          Authorization: token,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        const { id, name, nickname, password } = res.data.data;
+        setData({ id, name, nickname, password });
+      });
+  };
+
+  useEffect(() => {
+    getRes();
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ height: '100vh', backgroundImage: 'url(/images/background.png)', textAlign: 'center' }}>
@@ -26,17 +39,7 @@ function ProfilePage() {
         <Typography variant="h2" component="h2" fontWeight="400" sx={{ paddingTop: '2%' }}>
           My Profile
         </Typography>
-        {items.map((item) => {
-          return (
-            <MyProfile
-              key={item.id}
-              email={item.email}
-              type={item.type}
-              nickName={item.nickname}
-              wallet={item.wallet}
-            />
-          );
-        })}
+        <MyProfile key={data.id} name={data.name} nickName={data.nickname} />
       </Box>
     </ThemeProvider>
   );
