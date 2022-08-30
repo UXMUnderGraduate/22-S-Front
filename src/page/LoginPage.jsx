@@ -33,7 +33,7 @@ function LoginPage() {
     console.log('로그인');
     console.log('Email:', inputEmail);
     console.log('Pw:', inputPw);
-    axios.post('http://localhost:5000/api/v1/auth/signin', null, {
+    axios.post('http://192.168.0.2:9494/api/v1/auth/signin', null, {
       params: {
         'email' : inputEmail,
         'password' : inputPw
@@ -55,9 +55,9 @@ function LoginPage() {
              // id, pw 모두 일치 userId = userId1, msg = undefined
              console.log('======================','로그인 성공')
             sessionStorage.setItem('user_email', inputEmail)
+            // 작업 완료 되면 페이지 이동(새로고침)
+             document.location.href = '/'
         }
-        // 작업 완료 되면 페이지 이동(새로고침)
-         document.location.href = '/'
      })
     .catch()
   }
