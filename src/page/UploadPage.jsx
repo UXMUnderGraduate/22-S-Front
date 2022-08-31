@@ -441,7 +441,7 @@ const SingerList = (props) => {
             </Grid>
               
             </div>
-        </div>
+        </div>   
       ))}
     </DetailDiv>
   )
