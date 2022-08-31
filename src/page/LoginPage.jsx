@@ -35,7 +35,7 @@ function LoginPage() {
     console.log('Email:', inputEmail);
     console.log('Pw:', inputPw);
     axios
-      .post('http://localhost:5001/api/v1/auth/signin', null, {
+      .post('http://localhost:5000/api/v1/auth/signin', null, {
         params: {
           email: inputEmail,
           password: inputPw,
@@ -44,13 +44,15 @@ function LoginPage() {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
+          localStorage.setItem('access_token', res.data);
           sessionStorage.setItem('email', inputEmail);
           Navigate('/board');
-        } else if (res.status === 400) {
-          alert('아이디 및 비밀번호를 다시 한번 확인하세요.');
         }
       })
-      .catch();
+      .catch((err) => {
+        console.log(err);
+        alert('아이디와 비밀번호를 확인해주세요');
+      });
   };
   const Navigate = useNavigate();
   return (
