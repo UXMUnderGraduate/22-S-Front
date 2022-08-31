@@ -35,7 +35,7 @@ function LoginPage() {
     console.log('Email:', inputEmail);
     console.log('Pw:', inputPw);
     axios
-      .post('http://localhost:5001/api/v1/auth/signin', null, {
+      .post('http://localhost:9494/api/v1/auth/signin', null, {
         params: {
           email: inputEmail,
           password: inputPw,
@@ -45,6 +45,10 @@ function LoginPage() {
         console.log(res);
         if (res.status === 200) {
           sessionStorage.setItem('email', inputEmail);
+          const data = res.data;
+          const token = data.data.access_token;
+          console.log(`JWT Token: ${token}`);
+          localStorage.setItem('jwtToken', token);
           Navigate('/board');
         } else if (res.status === 400) {
           alert('아이디 및 비밀번호를 다시 한번 확인하세요.');
