@@ -1,128 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import BackgroundVideo from '../components/BackgroundVideo';
 import ListItem from '../components/ListItem';
 import Header from '../components/Header';
 import styled from 'styled-components';
-
-const dummyData = [
-  {
-    id: 1,
-    img: '/images/test1.png',
-    songName: '곡제목1',
-    album: '엘범제목1',
-    artistName: '생산자1',
-    playTime: '가사입니다 가사입니다 가사입니다 가사입니다 가사입니다 가사입니다 가사입니다 가사입니다',
-  },
-  {
-    id: 2,
-    img: '/images/test2.png',
-    songName: '곡제목2',
-    album: '엘범제목2',
-    artistName: '생산자2',
-    playTime: '1:00',
-  },
-  {
-    id: 3,
-    img: '/images/test3.png',
-    songName: '곡제목3',
-    album: '엘범제목3',
-    artistName: '생산자3',
-    playTime: '1:00',
-  },
-  {
-    id: 4,
-    img: '/images/test1.png',
-    songName: '곡제목4',
-    album: '엘범제목4',
-    artistName: '생산자4',
-    playTime: '1:00',
-  },
-  {
-    id: 5,
-    img: '/images/test1.png',
-    songName: '곡제목5',
-    album: '엘범제목5',
-    artistName: '생산자5',
-    playTime: '1:00',
-  },
-  {
-    id: 6,
-    img: '/images/test1.png',
-    songName: '곡제목6',
-    album: '엘범제목6',
-    artistName: '생산자6',
-    playTime: '1:00',
-  },
-  {
-    id: 7,
-    img: '/images/test2.png',
-    songName: '곡제목7',
-    album: '엘범제목7',
-    artistName: '생산자7',
-    playTime: '1:00',
-  },
-
-  {
-    id: 8,
-    img: '/images/test3.png',
-    songName: '곡제목8',
-    album: '엘범제목8',
-    artistName: '생산자8',
-    playTime: '1:00',
-  },
-
-  {
-    id: 12,
-    img: '/images/test2.png',
-    songName: '곡제목12',
-    album: '엘범제목12',
-    artistName: '생산자12',
-    playTime: '1:00',
-  },
-  {
-    id: 13,
-    img: '/images/test3.png',
-    songName: '곡제목13',
-    album: '엘범제목13',
-    artistName: '생산자13',
-    playTime: '1:00',
-  },
-  {
-    id: 14,
-    img: '/images/test1.png',
-    songName: '곡제목14',
-    album: '엘범제목14',
-    artistName: '생산자14',
-    playTime: '1:00',
-  },
-  {
-    id: 15,
-    img: '/images/test1.png',
-    songName: '곡제목15',
-    album: '엘범제목15',
-    artistName: '생산자15',
-    playTime: '1:00',
-  },
-];
+import axios from 'axios';
 
 function LibraryPage() {
+  const [data, setData] = useState('');
+  const itemDatas = [...data];
+
+  const getRes = async () => {
+    await axios
+      .get('http://192.168.0.2:9494/api/v1/purchase', {
+        headers: {
+          authorization:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6Iu2YhOyEoOyerCIsImlhdCI6MTY2MDIwMDU4M30.jSGHhrlFrHb2aeOwGd73a5iHEXpevW6R6K-nxAyqwLw',
+        },
+      })
+      .then((res) => {
+        setData(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  console.log(itemDatas);
+
+  useEffect(() => {
+    getRes();
+  }, []);
   return (
     <Box sx={{ height: '100%', zIndex: 0 }}>
       <BackgroundVideo />
       <Header />
       <Tpbox>
-        {dummyData.map((item) => {
+        {itemDatas.map((item, index) => {
           return (
             <ListItem
-              key={item.id}
+              key={index}
               id={item.id}
               img={item.img}
-              songName={item.songName}
-              playTime={item.playTime}
-              album={item.album}
-              artistName={item.artistName}
-            />
+              title={item.title}
+              genre={item.genre}
+              artist={item.artist}
+              user_id={item.user_id}
+            >
+              {console.log(item)}
+            </ListItem>
           );
         })}
       </Tpbox>

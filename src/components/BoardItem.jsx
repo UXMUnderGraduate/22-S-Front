@@ -20,10 +20,8 @@ const BoardItem = (props) => {
       <Card variant="div" sx={{ display: 'inline-block' }}>
         <CardActionArea>
           <CardMedia
-            sx={{ width: '190px', height: '190px' }}
+            sx={{ width: '190px', height: '190px', backgroundImage: `url('data:image/jpeg;base64,${props.image}')` }}
             component="img"
-            image={props.img}
-            alt="이미지 왜 안나와.."
           />
           <CardContent>
             <Typography gutterBottom variant="h6" component="div">
