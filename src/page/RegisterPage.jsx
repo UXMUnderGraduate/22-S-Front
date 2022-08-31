@@ -132,7 +132,7 @@ function RegisterPage() {
     } else {
       axios({
         method: 'post',
-        url: 'http://localhost:5001/api/v1/auth/check',
+        url: 'http://localhost:5000/api/v1/auth/check',
         data: {
           wallet: e.target.value,
         },

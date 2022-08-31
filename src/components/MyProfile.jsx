@@ -1,4 +1,5 @@
 import { Box, TextField, ThemeProvider, Button, createTheme } from '@mui/material';
+import * as contractApi from "../services/contract";
 
 const theme = createTheme({
   palette: {
@@ -9,9 +10,18 @@ const theme = createTheme({
       main: '#7966ce',
     },
   },
+
 });
 
-function MyProfile(props) {
+async function handleSettle(address) {
+  await contractApi.init();
+  contractApi.settlementContract.load(address);
+  const result = await contractApi.settlementContract.buy();
+  console.log(`buy() Transaction: ${result.transactionHash}`);
+}
+
+function MyProfile(props) { 
+  const address = "0x2F24C9C668F968cDDeEA0B7685029c1e0E9c1b1f";
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ textAlign: 'center' }}>
@@ -46,6 +56,9 @@ function MyProfile(props) {
           />
           <Button variant="contained" color="secondary" sx={{ width: '70%', marginTop: '2%' }}>
             change
+          </Button>
+          <Button onClick={async () => {await handleSettle(address)}} variant="contained" color="secondary" sx={{ width: '70%', marginTop: '2%' }}>
+          settle
           </Button>
         </Box>
       </Box>

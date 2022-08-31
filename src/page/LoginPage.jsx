@@ -35,7 +35,7 @@ function LoginPage() {
     console.log('Email:', inputEmail);
     console.log('Pw:', inputPw);
     axios
-      .post('http://localhost:5001/api/v1/auth/signin', null, {
+      .post('http://localhost:5000/api/v1/auth/signin', null, {
         params: {
           email: inputEmail,
           password: inputPw,
