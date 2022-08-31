@@ -35,6 +35,7 @@ function LoginPage() {
     console.log('Email:', inputEmail);
     console.log('Pw:', inputPw);
     axios
+
       .post('http://localhost:5000/api/v1/auth/signin', null, {
         params: {
           email: inputEmail,
@@ -46,6 +47,10 @@ function LoginPage() {
         if (res.status === 200) {
           localStorage.setItem('access_token', res.data);
           sessionStorage.setItem('email', inputEmail);
+          const data = res.data;
+          const token = data.data.access_token;
+          console.log(`JWT Token: ${token}`);
+          localStorage.setItem('jwtToken', token);
           Navigate('/board');
         }
       })
