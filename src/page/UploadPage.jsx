@@ -217,7 +217,7 @@ function RegisterPage() {
               variant="h5"
               sx={{ textAlign: 'center', fontSize: '30px', fontWeight: 'bold', marginBottom: '10px' }}
             >
-              회원가입
+              음원 업로드
             </Typography>
             <Boxs component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
               <FormControl component="fieldset" variant="standard">
@@ -226,9 +226,7 @@ function RegisterPage() {
                   <label style={{color:"white"}}>앨범커버</label>
                   <div {...getRootProps({ className: "dropzone" })}>
                   <input {...getInputProps()} id="image"/>
-                  console.log(input)
                   <aside style={thumbsContainer}> {thumbs}</aside> 
-                      
                   </div>
                   </Grid>
                   <Grid item xs={12}>
