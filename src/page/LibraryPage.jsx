@@ -12,7 +12,7 @@ function LibraryPage() {
 
   const getRes = async () => {
     await axios
-      .get('http://192.168.0.2:9494/api/v1/purchase', {
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/purchase`, {
         headers: {
           authorization:
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6Iu2YhOyEoOyerCIsImlhdCI6MTY2MDIwMDU4M30.jSGHhrlFrHb2aeOwGd73a5iHEXpevW6R6K-nxAyqwLw',

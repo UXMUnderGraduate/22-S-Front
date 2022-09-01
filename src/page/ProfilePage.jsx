@@ -16,7 +16,7 @@ function ProfilePage() {
   const getRes = async () => {
     const token = localStorage.getItem('jwtToken');
     await axios
-      .get('http://localhost:9494/api/v1/user', {
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/user`, {
         headers: {
           Authorization: token,
         },

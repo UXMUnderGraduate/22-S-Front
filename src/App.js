@@ -1,3 +1,4 @@
+import './polyfill';
 import { createTheme, ThemeProvider } from '@mui/material';
 import './App.css';
 import MainPage from './page/MainPage';

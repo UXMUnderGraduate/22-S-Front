@@ -1,19 +1,29 @@
-import { Box, Typography, Card, CircularProgress } from '@mui/material';
+import { Box, Typography, Card, CircularProgress, Button } from '@mui/material';
 import axios from 'axios';
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+
+import * as contractApi from '../services/contract';
+
+async function handleBuy(address) {
+  await contractApi.init();
+  contractApi.settlementContract.load(address);
+  const result = await contractApi.settlementContract.buy();
+  console.log(`settle() Transaction: ${result.transactionHash}`);
+}
 
 export default function SongInfo() {
   const { state } = useLocation();
   const { id } = state;
   const [data, setData] = useState('');
   const [loading, setLoading] = useState(true);
+  const address = '0x2F24C9C668F968cDDeEA0B7685029c1e0E9c1b1f';
 
   const getRes = async () => {
     setLoading(true);
     await axios
-      .get(`http://192.168.0.2:9494/api/v1/music/${id}`, {
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/music/${id}`, {
         headers: {
           authorization:
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6Iu2YhOyEoOyerCIsImlhdCI6MTY2MDIwMDU4M30.jSGHhrlFrHb2aeOwGd73a5iHEXpevW6R6K-nxAyqwLw',
@@ -63,6 +73,16 @@ export default function SongInfo() {
       >
         {data.lyrics}
       </Typography>
+      <Button
+        onClick={async () => {
+          await handleBuy(address);
+        }}
+        variant="contained"
+        color="secondary"
+        sx={{ fontSize: '3vh', width: '40%', padding: '1vh', marginBottom: '10%' }}
+      >
+        Buy
+      </Button>
     </Box>
   );
 }

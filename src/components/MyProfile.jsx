@@ -1,6 +1,7 @@
 import { Box, TextField, ThemeProvider, Button, createTheme } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
+import * as contractApi from '../services/contract';
 
 const theme = createTheme({
   palette: {
@@ -13,7 +14,15 @@ const theme = createTheme({
   },
 });
 
+async function handleSettle(address) {
+  await contractApi.init();
+  contractApi.settlementContract.load(address);
+  const result = await contractApi.settlementContract.buy();
+  console.log(`buy() Transaction: ${result.transactionHash}`);
+}
+
 function MyProfile(props) {
+  const address = '0x2F24C9C668F968cDDeEA0B7685029c1e0E9c1b1f';
   const [name, setName] = useState(props.name);
   const [nickname, setNickname] = useState(props.nickName);
   const [password, setPassword] = useState('');
@@ -39,7 +48,7 @@ function MyProfile(props) {
     const token = localStorage.getItem('jwtToken');
     axios
       .put(
-        'http://localhost:9494/api/v1/user',
+        `http://${process.env.REACT_APP_BACKEND_URL}/api/v1/user`,
         { name, nickname, password },
         {
           headers: {
@@ -97,6 +106,16 @@ function MyProfile(props) {
           />
           <Button variant="contained" color="secondary" sx={{ width: '70%', marginTop: '2%' }} onClick={onClickChange}>
             change
+          </Button>
+          <Button
+            onClick={async () => {
+              await handleSettle(address);
+            }}
+            variant="contained"
+            color="secondary"
+            sx={{ width: '70%', marginTop: '2%' }}
+          >
+            settle
           </Button>
         </Box>
       </Box>
