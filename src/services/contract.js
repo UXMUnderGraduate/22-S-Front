@@ -1,5 +1,6 @@
-import Web3 from 'web3';
 import Metamask from './metamask';
+import Web3 from 'web3';
+
 import bytecodeSeller from '../assets/contracts_SellerContract_sol_SellerContract.txt';
 import abiSeller from '../assets/contracts_SellerContract_sol_SellerContract.json';
 import bytecodeSettle from '../assets/contracts_SettlementContract_sol_SettlementContract.txt';
@@ -36,7 +37,7 @@ export const deployContract = {
   seller: async (userId) => {
     const args = [Web3.utils.toHex(userId.toString())];
     const deployedSellerContract = await deployContract.deploy(abiSeller, bytecodeSeller, metamask.account, args);
-    console.log(`Seller contract deployed: ${deployedSellerContract.options.address}`);
+    console.log(`Seller contract  deployed: ${deployedSellerContract.options.address}`);
     return deployedSellerContract;
   },
   settlement: async (scAddress, addresses, proportions, songCid, price) => {

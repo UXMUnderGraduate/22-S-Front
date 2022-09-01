@@ -1,3 +1,4 @@
+import './polyfill';
 import { createTheme, ThemeProvider } from '@mui/material';
 import './App.css';
 import MainPage from './page/MainPage';
@@ -12,7 +13,6 @@ import UploadPage from './page/UploadPage';
 import LibraryPage from './page/LibraryPage';
 import ProfilePage from './page/ProfilePage';
 import SongInfoPage from './page/SongInfoPage';
-
 
 // const dummyData = [
 //   {
