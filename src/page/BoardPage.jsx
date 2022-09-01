@@ -13,7 +13,7 @@ const BoardPage = () => {
 
   const getRes = async () => {
     await axios
-      .get('http://192.168.0.2:9494/api/v1/music/chart?genre=Pop')
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/music/chart?genre=Pop`)
       .then((res) => {
         setData(res.data.data);
       })
