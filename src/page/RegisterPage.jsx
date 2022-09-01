@@ -62,7 +62,7 @@ function RegisterPage() {
 
     // post
     await axios
-      .post('http://192.168.0.2:9494/api/v1/auth/signup', postData)
+      .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/signup`, postData)
       .then(function (response) {
         console.log(response, '성공');
         navigate('/login');
@@ -132,7 +132,7 @@ function RegisterPage() {
     } else {
       axios({
         method: 'post',
-        url: 'http://localhost:5000/api/v1/auth/check',
+        url: `http://${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/check`,
         data: {
           wallet: e.target.value,
         },
