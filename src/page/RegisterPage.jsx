@@ -210,6 +210,7 @@ function RegisterPage() {
                     <TextField
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
                       required
+                      autoFocus
                       fullWidth
                       id="name"
                       name="name"
@@ -237,7 +238,6 @@ function RegisterPage() {
                     <TextField
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
                       required
-                      autoFocus
                       fullWidth
                       type="email"
                       id="email"
