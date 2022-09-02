@@ -85,6 +85,7 @@ function RegisterPage() {
   const [genre, setGenre] = useState('R&B');
   const [checked, setChecked] = useState(false);
   const [registerError, setRegisterError] = useState('');
+  const token = localStorage.getItem('token');
 
   const onhandlePost = async (data) => {
     const { title, album, lylics, file, image } = data;
@@ -95,7 +96,7 @@ function RegisterPage() {
       .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/upload`, {
         headers: {
           authorization:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6IuuwseyYiOumsCIsImlhdCI6MTY2MDgwMTc5NH0.tgaEvAYf_SHqIlZOa1Z0tYgHgEMi2a3BJ7Nsb0k72Wg',
+            `${token}`
         },
         data: postData,
       })
