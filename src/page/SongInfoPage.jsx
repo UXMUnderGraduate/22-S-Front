@@ -76,16 +76,18 @@ export default function SongInfo() {
       >
         {data.lyrics}
       </Typography>
-      <Button
-        onClick={async () => {
-          await handleBuy(address);
-        }}
-        variant="contained"
-        color="secondary"
-        sx={{ fontSize: '3vh', width: '40%', padding: '1vh', marginBottom: '10%' }}
-      >
-        Buy
-      </Button>
+      {data.state === true ? (
+        <Button
+          onClick={async () => {
+            await handleBuy(address);
+          }}
+          variant="contained"
+          color="secondary"
+          sx={{ fontSize: '3vh', width: '40%', padding: '1vh', marginBottom: '10%' }}
+        >
+          Buy
+        </Button>
+      ) : null}
     </Box>
   );
 }

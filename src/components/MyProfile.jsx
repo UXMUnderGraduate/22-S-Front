@@ -13,6 +13,11 @@ const theme = createTheme({
     },
   },
 });
+const token = localStorage.getItem('jwtToken');
+const base64Payload = token.split('.')[1];
+const payload = Buffer.from(base64Payload, 'base64');
+const decodeData = JSON.parse(payload.toString());
+const type = decodeData.type;
 
 async function handleSettle(address) {
   await contractApi.init();
@@ -107,16 +112,18 @@ function MyProfile(props) {
           <Button variant="contained" color="secondary" sx={{ width: '70%', marginTop: '2%' }} onClick={onClickChange}>
             change
           </Button>
-          <Button
-            onClick={async () => {
-              await handleSettle(address);
-            }}
-            variant="contained"
-            color="secondary"
-            sx={{ width: '70%', marginTop: '2%' }}
-          >
-            settle
-          </Button>
+          {type === 'Producer' ? 
+            <Button
+              onClick={async () => {
+                await handleSettle(address);
+              }}
+              variant="contained"
+              color="secondary"
+              sx={{ width: '70%', marginTop: '2%' }}
+            >
+              settle
+            </Button>
+           : null}
         </Box>
       </Box>
     </ThemeProvider>
