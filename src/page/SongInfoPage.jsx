@@ -18,16 +18,17 @@ export default function SongInfo() {
   const { id } = state;
   const [data, setData] = useState('');
   const [loading, setLoading] = useState(true);
-  const navigate =useNavigate()
+  const navigate = useNavigate();
   const address = '0x2F24C9C668F968cDDeEA0B7685029c1e0E9c1b1f';
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('jwtToken');
+  console.log(token);
 
   const getRes = async () => {
     setLoading(true);
     await axios
       .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/music/${id}`, {
         headers: {
-          authorization: `${token}`,
+          authorization: token,
         },
       })
       .then((res) => {
@@ -37,7 +38,7 @@ export default function SongInfo() {
       })
       .catch((err) => {
         console.log(err);
-        navigate('/403')
+        navigate('/403');
       });
   };
 
