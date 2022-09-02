@@ -19,7 +19,7 @@ import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import axios from 'axios';
-import { useCookies } from 'react-cookie';
+// import { useCookies } from 'react-cookie';
 
 // 모달창
 const style = {
@@ -122,19 +122,22 @@ export default function Header() {
     setAnchorEl(null);
   };
 
-  const COOKIE_KEY = window.LOGIN_KEY;
+  // const COOKIE_KEY = window.LOGIN_KEY;
 
-  const logoutURL = `/`;
+  // const logoutURL = `/`;
 
-  const [, , removeCookie] = useCookies([COOKIE_KEY]);
+  // const [, , removeCookie] = useCookies([COOKIE_KEY]);
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleLogout = () => {
-    removeCookie(COOKIE_KEY, { path: '/' });
-    window.location.href = logoutURL;
+    // removeCookie(COOKIE_KEY, { path: '/' });
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('access_token');
+    Navigate('/');
+    // window.location.href = logoutURL;
   };
 
   const renderMenu = (
