@@ -10,10 +10,15 @@ import { useNavigate } from 'react-router-dom';
 function LibraryPage() {
   const [data, setData] = useState('');
   const itemDatas = [...data];
-  const token = localStorage.getItem('jwtToken');
   const navigate = useNavigate();
+  const token = localStorage.getItem('jwtToken');
+  const base64Payload = token.split('.')[1];
+  const payload = Buffer.from(base64Payload, 'base64');
+  const decodeData = JSON.parse(payload.toString());
+  const type = decodeData.type;
+  console.log(type);
 
-  const getRes = async () => {
+  const getPurchaseRes = async () => {
     await axios
       .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/purchase`, {
         headers: {
@@ -29,9 +34,29 @@ function LibraryPage() {
       });
   };
   console.log(itemDatas);
+  const getUploadDataRes = async () => {
+    await axios
+      .get(
+        `http://${process.env.REACT_APP_BACKEND_URL}/api/v1/upload
+`,
+        {
+          headers: {
+            authorization: token,
+          },
+        },
+      )
+      .then((res) => {
+        setData(res.data.data);
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        navigate('/403');
+      });
+  };
 
   useEffect(() => {
-    getRes();
+    type === 'General' ? getPurchaseRes() : getUploadDataRes();
   }, []);
   return (
     <Box sx={{ height: '100%', zIndex: 0 }}>
@@ -48,6 +73,7 @@ function LibraryPage() {
               genre={item.genre}
               artist={item.artist}
               user_id={item.user_id}
+              state = {false}
             >
               {console.log(item)}
             </ListItem>
