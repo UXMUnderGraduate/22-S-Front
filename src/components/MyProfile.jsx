@@ -1,5 +1,6 @@
 import { Box, TextField, ThemeProvider, Button, createTheme } from '@mui/material';
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 import { useState } from 'react';
 import * as contractApi from '../services/contract';
 
@@ -13,11 +14,9 @@ const theme = createTheme({
     },
   },
 });
+
 const token = localStorage.getItem('jwtToken');
-const base64Payload = token.split('.')[1];
-const payload = Buffer.from(base64Payload, 'base64');
-const decodeData = JSON.parse(payload.toString());
-const type = decodeData.type;
+const type = jwtDecode(token).type;
 
 async function handleSettle(address) {
   await contractApi.init();
@@ -112,7 +111,7 @@ function MyProfile(props) {
           <Button variant="contained" color="secondary" sx={{ width: '70%', marginTop: '2%' }} onClick={onClickChange}>
             change
           </Button>
-          {type === 'Producer' ? 
+          {type === 'Producer' ? (
             <Button
               onClick={async () => {
                 await handleSettle(address);
@@ -123,7 +122,7 @@ function MyProfile(props) {
             >
               settle
             </Button>
-           : null}
+          ) : null}
         </Box>
       </Box>
     </ThemeProvider>

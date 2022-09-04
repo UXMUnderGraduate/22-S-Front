@@ -7,6 +7,7 @@ import BackgroundVideo from '../components/BackgroundVideo';
 import Header from '../components/Header';
 import BoardGrid from '../components/BoardGrid';
 import { useNavigate } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 
 const BoardPage = () => {
   const navigate = useNavigate();
@@ -14,7 +15,8 @@ const BoardPage = () => {
   const test = [...data];
 
   const token = localStorage.getItem('jwtToken');
-  console.log(token);
+  localStorage.setItem('type', jwtDecode(token).type);
+  // console.log(jwtDecode(token).type);
 
   const getRes = async () => {
     await axios
