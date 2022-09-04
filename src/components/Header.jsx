@@ -136,6 +136,7 @@ export default function Header() {
     // removeCookie(COOKIE_KEY, { path: '/' });
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('access_token');
+    localStorage.removeItem('type');
     Navigate('/');
     // window.location.href = logoutURL;
   };

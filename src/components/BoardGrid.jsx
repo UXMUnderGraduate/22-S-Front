@@ -29,6 +29,7 @@ const BoardGrid = (props) => {
               genre={item.genre}
               artist={item.artist}
               user_id={item.user_id}
+              pageState={"Board"}
             >
               {console.log(item)}
             </ListItem>
