@@ -76,7 +76,7 @@ export default function SongInfo() {
       >
         {data.lyrics}
       </Typography>
-      {data.state === true ? (
+      {localStorage.getItem('type') === 'General' ? (
         <Button
           onClick={async () => {
             await handleBuy(address);
