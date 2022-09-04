@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import BackgroundVideo from '../components/BackgroundVideo';
 import ListItem from '../components/ListItem';
 import Header from '../components/Header';
@@ -33,7 +33,7 @@ function LibraryPage() {
         navigate('/403');
       });
   };
-  console.log(itemDatas);
+  // console.log(itemDatas);
   const getUploadDataRes = async () => {
     await axios
       .get(
@@ -62,24 +62,26 @@ function LibraryPage() {
     <Box sx={{ height: '100%', zIndex: 0 }}>
       <BackgroundVideo />
       <Header />
-      <Tpbox>
-        {itemDatas.map((item, index) => {
-          return (
-            <ListItem
-              key={index}
-              id={item.id}
-              img={item.img}
-              title={item.title}
-              genre={item.genre}
-              artist={item.artist}
-              user_id={item.user_id}
-              state = {false}
-            >
-              {console.log(item)}
-            </ListItem>
-          );
-        })}
-      </Tpbox>
+      <Container>
+        <Tpbox>
+          {itemDatas.map((item, index) => {
+            return (
+              <ListItem
+                key={index}
+                id={item.id}
+                img={item.img}
+                title={item.title}
+                album={item.album}
+                artist={item.artist}
+                user_id={item.user_id}
+                pageState="Library"
+              >
+                {console.log(item)}
+              </ListItem>
+            );
+          })}
+        </Tpbox>
+      </Container>
     </Box>
   );
 }
