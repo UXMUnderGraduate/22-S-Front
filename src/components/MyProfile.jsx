@@ -1,6 +1,7 @@
 import { Box, TextField, ThemeProvider, Button, createTheme } from '@mui/material';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import * as contractApi from '../services/contract';
 
@@ -16,7 +17,6 @@ const theme = createTheme({
 });
 
 const token = localStorage.getItem('jwtToken');
-const type = jwtDecode(token).type;
 
 async function handleSettle(address) {
   await contractApi.init();
@@ -26,6 +26,10 @@ async function handleSettle(address) {
 }
 
 function MyProfile(props) {
+  const [type, setType] = useState('');
+  useEffect(() => {
+    setType(jwtDecode(token).type);
+  }, []);
   const address = '0x2F24C9C668F968cDDeEA0B7685029c1e0E9c1b1f';
   const [name, setName] = useState(props.name);
   const [nickname, setNickname] = useState(props.nickName);
