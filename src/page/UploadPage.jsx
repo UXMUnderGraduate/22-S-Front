@@ -19,6 +19,7 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
+import * as contractApi from '../services/contract';
 
 const thumbsContainer = {
   display: 'flex',
@@ -86,6 +87,8 @@ function RegisterPage() {
   const [checked, setChecked] = useState(false);
   const [registerError, setRegisterError] = useState('');
   const token = localStorage.getItem('token');
+  let userId = '1';
+  let sellerContractAddress;
 
   const onhandlePost = async (data) => {
     const { title, album, lylics, file, image } = data;
@@ -95,8 +98,7 @@ function RegisterPage() {
     await axios
       .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/upload`, {
         headers: {
-          authorization:
-            `${token}`
+          authorization: `${token}`,
         },
         data: postData,
       })
@@ -119,10 +121,19 @@ function RegisterPage() {
     setChecked(event.target.checked);
   };
 
+  const handleCreateSellerContract = async (userId) => {
+    await contractApi.init();
+    const sellerContract = await contractApi.deployContract.seller(userId);
+    sellerContractAddress = sellerContract.options.address;
+    console.log(sellerContract);
+    console.log(`sellerContractAddress: ${sellerContractAddress}`);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
+    console.log(data);
     const genreType = genre;
     const joinData = {
       title: data.get('title'),
@@ -136,7 +147,6 @@ function RegisterPage() {
 
     // 회원가입 동의 체크
     if (!checked) alert('올바른 양식과 함께 업로드 약관에 동의해주세요.');
-
     if (checked) {
       onhandlePost(joinData);
     }
@@ -332,6 +342,17 @@ function RegisterPage() {
                     />
                   </Grid>
                 </Grid>
+                <Button
+                  onClick={async () => {
+                    handleCreateSellerContract(userId);
+                  }}
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 1 }}
+                  style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
+                >
+                  SellerContract 생성
+                </Button>
                 <Button
                   type="submit"
                   fullWidth
