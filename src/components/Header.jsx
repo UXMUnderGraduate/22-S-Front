@@ -13,6 +13,12 @@ import {
   ListItemButton,
   ThemeProvider,
   createTheme,
+  Drawer,
+  Button,
+  List,
+  Divider,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -77,7 +83,41 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const ariaLabel = { 'aria-label': 'search' };
 export default function Header() {
+  const [state, setState] = React.useState({
+    bottom: false,
+  });
+
+  const anchor = 'bottom';
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setState({ ...state, [anchor]: open });
+  };
+
+  const list = (anchor) => (
+    <Box
+      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        {data.map((item) => (
+          <ListItem key={item.id}>
+            <ListItemButton>
+              <ListItemText primary={item.title} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+    </Box>
+  );
+
   const Navigate = useNavigate();
+  const [data, setData] = useState([]);
 
   const theme = createTheme({
     palette: {
@@ -87,27 +127,34 @@ export default function Header() {
       main: 'transparent',
     },
   });
+  const token = localStorage.getItem('jwtToken');
 
   const [search, setSearch] = useState('');
   const onChangeSearch = (e) => {
-    e.preventDefault();
     setSearch(e.target.value);
   };
-  // console.log(search);
 
-  const [list, setList] = useState([]);
-
-  const onSearch = (e) => {
-    e.preventDefault();
-    if (search === null || search === '') {
-      axios.get().then((res) => {
-        setList(res.data.userList);
+  const handleOnClick = async () => {
+    console.log(search);
+    // console.log(token);
+    await axios
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/music?search=${search}`, {
+        headers: {
+          authorization: token,
+        },
+      })
+      .then((res) => {
+        setData(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    } else {
-      const filterData = list.filter((row) => row.userId.includes(search));
-      setList(filterData);
+  };
+  const handleOnKeyPress = (e) => {
+    if (e.key == 'Enter') {
+      handleOnClick();
+      console.log(data);
     }
-    setSearch('');
   };
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -140,6 +187,8 @@ export default function Header() {
     Navigate('/');
     // window.location.href = logoutURL;
   };
+  // const handleSearch = (
+  // );
 
   const renderMenu = (
     <Menu
@@ -202,12 +251,25 @@ export default function Header() {
               Library
             </ListItemButton>
           </Box>
-          <Search onSubmit={(e) => onSearch(e)}>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase placeholder="Search…" inputProps={ariaLabel} onChange={onChangeSearch} />
-          </Search>
+          <React.Fragment key={anchor}>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={ariaLabel}
+                value={search}
+                onChange={onChangeSearch}
+                onKeyPress={handleOnKeyPress}
+              />
+              <Button onClick={toggleDrawer(anchor, true)}>검색</Button>
+              <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+                {list(anchor)}
+              </Drawer>
+            </Search>
+          </React.Fragment>
+
           <Box sx={{ flexGrow: 1 }} />
           <Box>
             <IconButton

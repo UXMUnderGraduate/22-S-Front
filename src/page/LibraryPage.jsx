@@ -6,17 +6,19 @@ import Header from '../components/Header';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 
 function LibraryPage() {
   const [data, setData] = useState('');
   const itemDatas = [...data];
   const navigate = useNavigate();
   const token = localStorage.getItem('jwtToken');
-  const base64Payload = token.split('.')[1];
-  const payload = Buffer.from(base64Payload, 'base64');
-  const decodeData = JSON.parse(payload.toString());
-  const type = decodeData.type;
-  console.log(type);
+
+  const [type, setType] = useState('');
+
+  useEffect(() => {
+    setType(jwtDecode(token).type);
+  }, []);
 
   const getPurchaseRes = async () => {
     await axios
