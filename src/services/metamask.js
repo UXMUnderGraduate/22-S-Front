@@ -14,6 +14,8 @@ class Metamask {
     this.web3Provider = await detectEthereumProvider();
     if (!this.web3Provider) {
       console.log('Please install MetaMask!');
+      alert('Please install MetaMask!');
+      return;
     }
     await window.ethereum
       .request({
@@ -25,6 +27,7 @@ class Metamask {
           console.log('Please connect to MetaMask.');
         } else {
           console.error(error);
+          alert('Please connect to MetaMask.');
         }
       });
     this.web3 = new Web3(this.web3Provider);
