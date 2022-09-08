@@ -16,6 +16,7 @@ const BoardPage = () => {
 
   const token = localStorage.getItem('jwtToken');
   localStorage.setItem('type', jwtDecode(token).type);
+  localStorage.setItem('userId', jwtDecode(token).id);
   // console.log(jwtDecode(token).type);
 
   const getRes = async () => {
@@ -37,6 +38,7 @@ const BoardPage = () => {
 
   useEffect(() => {
     getRes();
+    // window.location.reload(true);
   }, []);
 
   return (
