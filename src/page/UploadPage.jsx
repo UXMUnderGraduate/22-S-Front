@@ -87,7 +87,7 @@ function RegisterPage() {
   const [checked, setChecked] = useState(false);
   const [registerError, setRegisterError] = useState('');
   const token = localStorage.getItem('token');
-  let userId = '1';
+  let userId = localStorage.getItem('userId');
   let sellerContractAddress;
 
   const onhandlePost = async (data) => {
