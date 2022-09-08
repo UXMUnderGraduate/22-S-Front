@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import {
   AppBar,
@@ -25,7 +25,7 @@ import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import axios from 'axios';
-import jwtDecode from "jwt-decode";
+import jwtDecode from 'jwt-decode';
 // import { useCookies } from 'react-cookie';
 
 // 모달창
@@ -84,7 +84,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const ariaLabel = { 'aria-label': 'search' };
 export default function Header() {
-
   const [type, setType] = useState('');
   useEffect(() => {
     setType(jwtDecode(token).type);
@@ -113,13 +112,15 @@ export default function Header() {
       <List>
         {data.map((item) => (
           <ListItem key={item.id}>
-            <ListItemButton onClick={() =>
-              Navigate(`/board/${item.id}`, {
-                state: {
-                  id: item.id,
-                },
-              })
-            }>
+            <ListItemButton
+              onClick={() =>
+                Navigate(`/board/${item.id}`, {
+                  state: {
+                    id: item.id,
+                  },
+                })
+              }
+            >
               <ListItemText primary={item.title} />
             </ListItemButton>
           </ListItem>
@@ -145,7 +146,7 @@ export default function Header() {
   const [search, setSearch] = useState('');
   const onChangeSearch = (e) => {
     setSearch(e.target.value);
-    toggleDrawer(anchor, true)
+    toggleDrawer(anchor, true);
   };
 
   const handleOnClick = async () => {
@@ -175,8 +176,8 @@ export default function Header() {
 
   const isMenuOpen = Boolean(anchorEl);
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleProfileMenuOpen = (e) => {
+    setAnchorEl(e.currentTarget);
   };
 
   const handleMenuClose = () => {
@@ -195,11 +196,9 @@ export default function Header() {
 
   const handleLogout = () => {
     // removeCookie(COOKIE_KEY, { path: '/' });
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('type');
-    Navigate('/');
-    // window.location.href = logoutURL;
+    localStorage.clear();
+    alert('로그아웃되었습니다.');
+    window.location.replace('http://localhost:3000/');
   };
   // const handleSearch = (
   // );
@@ -218,8 +217,8 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => Navigate('/profile')}>My account</MenuItem>
-      {type==='Producer'?<MenuItem onClick={() => Navigate('/upload')}>Upload</MenuItem>:null}
+      <MenuItem onClick={() => window.location.replace('/profile')}>My account</MenuItem>
+      {type === 'Producer' ? <MenuItem onClick={() => window.location.replace('/upload')}>Upload</MenuItem> : null}
       <MenuItem onClick={handleOpen}>terms of service</MenuItem>
       <Modal
         open={open}
