@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import {
   AppBar,
@@ -25,6 +25,7 @@ import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import axios from 'axios';
+import jwtDecode from "jwt-decode";
 // import { useCookies } from 'react-cookie';
 
 // 모달창
@@ -83,6 +84,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const ariaLabel = { 'aria-label': 'search' };
 export default function Header() {
+
+  const [type, setType] = useState('');
+  useEffect(() => {
+    setType(jwtDecode(token).type);
+  }, []);
+
   const [state, setState] = React.useState({
     bottom: false,
   });
@@ -106,7 +113,13 @@ export default function Header() {
       <List>
         {data.map((item) => (
           <ListItem key={item.id}>
-            <ListItemButton>
+            <ListItemButton onClick={() =>
+              Navigate(`/board/${item.id}`, {
+                state: {
+                  id: item.id,
+                },
+              })
+            }>
               <ListItemText primary={item.title} />
             </ListItemButton>
           </ListItem>
@@ -132,6 +145,7 @@ export default function Header() {
   const [search, setSearch] = useState('');
   const onChangeSearch = (e) => {
     setSearch(e.target.value);
+    toggleDrawer(anchor, true)
   };
 
   const handleOnClick = async () => {
@@ -157,7 +171,7 @@ export default function Header() {
     }
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -205,7 +219,7 @@ export default function Header() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={() => Navigate('/profile')}>My account</MenuItem>
-      <MenuItem onClick={() => Navigate('/upload')}>Upload</MenuItem>
+      {type==='Producer'?<MenuItem onClick={() => Navigate('/upload')}>Upload</MenuItem>:null}
       <MenuItem onClick={handleOpen}>terms of service</MenuItem>
       <Modal
         open={open}
