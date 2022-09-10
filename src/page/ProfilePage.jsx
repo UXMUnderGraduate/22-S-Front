@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { Box, ThemeProvider, Typography } from '@mui/material';
+import { Box, Button, ThemeProvider, Typography } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import MyProfile from '../components/MyProfile';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 // import styled from "styled-components";
 
 function ProfilePage() {
+  const navigate = useNavigate();
   const theme = createTheme({
     main: '#ffffff',
   });
@@ -35,7 +37,15 @@ function ProfilePage() {
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ height: '100vh', backgroundImage: 'url(/images/background.png)', textAlign: 'center' }}>
-        <AccountCircleIcon sx={{ fontSize: '600%', paddingTop: '10%' }} />
+        <Button
+          sx={{ display: 'block', color: '#ffffff' }}
+          onClick={() => {
+            navigate('/board');
+          }}
+        >
+          뒤로가기
+        </Button>
+        <AccountCircleIcon sx={{ fontSize: '600%', margin: '10%' }} />
         <Typography variant="h2" component="h2" fontWeight="400" sx={{ paddingTop: '2%' }}>
           My Profile
         </Typography>
