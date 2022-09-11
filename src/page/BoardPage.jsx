@@ -23,7 +23,7 @@ const BoardPage = () => {
     await axios
       .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/music/chart?genre=Pop`, {
         headers: {
-          Authorization: `${token}`,
+          Authorization: token,
         },
       })
       .then((res) => {
