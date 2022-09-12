@@ -25,8 +25,8 @@ function ProfilePage() {
       })
       .then((res) => {
         console.log(res.data);
-        const { id, name, nickname, password } = res.data.data;
-        setData({ id, name, nickname, password });
+        const { id, name, nickname, password, wallet } = res.data.data;
+        setData({ id, name, nickname, password , wallet});
       });
   };
 
@@ -49,7 +49,7 @@ function ProfilePage() {
         <Typography variant="h2" component="h2" fontWeight="400" sx={{ paddingTop: '2%' }}>
           My Profile
         </Typography>
-        <MyProfile key={data.id} name={data.name} nickName={data.nickname} />
+        <MyProfile key={data.id} name={data.name} nickName={data.nickname} wallet={data.wallet}/>
       </Box>
     </ThemeProvider>
   );
