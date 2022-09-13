@@ -30,7 +30,7 @@ function MyProfile(props) {
   useEffect(() => {
     setType(jwtDecode(token).type);
   }, []);
-  const address = props.wallet
+  const address = props.wallet;
   const [name, setName] = useState(props.name);
   const [nickname, setNickname] = useState(props.nickName);
   const [password, setPassword] = useState('');
