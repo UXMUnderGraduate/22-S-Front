@@ -21,6 +21,7 @@ function LoginPage() {
   });
   const [inputEmail, setInputEmail] = useState('');
   const [inputPw, setInputPW] = useState('');
+  const [summit, setSummit] = useState(false);
 
   const handleInputEmail = (e) => {
     setInputEmail(e.target.value);
@@ -34,6 +35,7 @@ function LoginPage() {
     console.log('로그인');
     console.log('Email:', inputEmail);
     console.log('Pw:', inputPw);
+    setSummit(true);
     axios
 
       .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/signin`, null, {
@@ -55,6 +57,7 @@ function LoginPage() {
         }
       })
       .catch((err) => {
+        setSummit(false);
         console.log(err);
         alert('아이디와 비밀번호를 확인해주세요');
       });
@@ -116,16 +119,18 @@ function LoginPage() {
               }
               label="자동로그인"
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={onClickLogin}
-              style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
-            >
-              로그인
-            </Button>
+            {summit === false ? (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={onClickLogin}
+                style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
+              >
+                로그인
+              </Button>
+            ) : null}
             <Grid container>
               <Grid item xs>
                 <Link
