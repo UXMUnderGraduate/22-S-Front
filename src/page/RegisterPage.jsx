@@ -47,6 +47,7 @@ function RegisterPage() {
   });
   const [type, setType] = useState('General');
   const [checked, setChecked] = useState(false);
+  const [summit, setSummit] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordState, setPasswordState] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -59,7 +60,7 @@ function RegisterPage() {
   const onhandlePost = async (data) => {
     const { email, name, nickname, password, wallet } = data;
     const postData = { email, name, nickname, password, wallet, type };
-
+    setSummit(true);
     // post
     await axios
       .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/signup`, postData)
@@ -69,6 +70,7 @@ function RegisterPage() {
       })
       .catch(function (err) {
         console.log(err);
+        setSummit(false);
         setRegisterError('회원가입에 실패하였습니다. 다시한번 확인해 주세요.');
       });
   };
@@ -326,15 +328,17 @@ function RegisterPage() {
                     />
                   </Grid>
                 </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 4 }}
-                  style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
-                >
-                  회원가입
-                </Button>
+                {summit === false ? (
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 4 }}
+                    style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
+                  >
+                    회원가입
+                  </Button>
+                ) : null}
               </FormControl>
               <FormHelperTexts>{registerError}</FormHelperTexts>
             </Boxs>
