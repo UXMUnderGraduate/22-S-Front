@@ -13,8 +13,8 @@ export default function ListItem(props) {
 
   async function handleSettle() {
     await contractApi.init();
-    const address = props.sellerAddr;
-    console.log(`SellerContract address: ${address}`);
+    const address = props.settlementAddr;
+    console.log(`SettlementContract address: ${address}`);
     contractApi.settlementContract.load(address);
     const result = await contractApi.settlementContract.settle();
     console.log(`settle() Transaction: ${result.transactionHash}`);

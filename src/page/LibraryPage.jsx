@@ -74,7 +74,7 @@ function LibraryPage() {
                 album={item.album}
                 artist={item.artist}
                 user_id={item.user_id}
-                sellerAddr={item.sellerAddr}
+                settlementAddr={item.settlementAddr}
                 pageState="Library"
               >
                 {console.log(item)}
