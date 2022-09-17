@@ -6,19 +6,13 @@ import Header from '../components/Header';
 import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
 
 function LibraryPage() {
   const [data, setData] = useState('');
   const itemDatas = [...data];
   const navigate = useNavigate();
   const token = localStorage.getItem('jwtToken');
-
-  const [type, setType] = useState('');
-
-  useEffect(() => {
-    setType(jwtDecode(token).type);
-  }, []);
+  const type = localStorage.getItem('type');
 
   const getPurchaseRes = async () => {
     await axios
@@ -59,6 +53,7 @@ function LibraryPage() {
 
   useEffect(() => {
     type === 'General' ? getPurchaseRes() : getUploadDataRes();
+    console.log(type);
   }, []);
   return (
     <Box sx={{ height: '100%', zIndex: 0 }}>
