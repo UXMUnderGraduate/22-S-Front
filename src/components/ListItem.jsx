@@ -1,5 +1,4 @@
 import { Box, Button } from '@mui/material';
-import axios from 'axios';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as contractApi from '../services/contract';
@@ -8,7 +7,7 @@ export default function ListItem(props) {
   console.log(props.pageState);
   const id = props.id;
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('jwtToken');
   const type = localStorage.getItem('type');
 
   async function handleSettle() {
@@ -47,24 +46,8 @@ export default function ListItem(props) {
         ) : (
           <Button
             color="secondary"
-            onClick={async () =>
-              await axios
-                .get(
-                  `http://${process.env.REACT_APP_BACKEND_URL}/api/v1/purchase/${id}
-`,
-                  {
-                    headers: {
-                      Authorization: token,
-                    },
-                  },
-                )
-                .then((res) => {
-                  console.log(res);
-                })
-                .catch((err) => {
-                  console.log(err);
-                  // navigate('/403');
-                })
+            onClick={() =>
+              window.open(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/purchase/${id}?token=${token}`, '_self')
             }
           >
             download
