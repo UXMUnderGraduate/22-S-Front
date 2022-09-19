@@ -196,6 +196,15 @@ function RegisterPage() {
     setCountComposerList(countArr);
   };
 
+  const onDeleteComposerDiv = () => {
+    let countArr = [...countComposerList];
+    let counter = countArr.slice(-1)[0];
+    counter-=1;
+    countArr.pop(counter); // index 사용 X
+    // countArr[counter] = counter	// index 사용 시 윗줄 대신 사용
+    setCountComposerList(countArr);
+  };
+
   const [countSingerList, setCountSingerList] = useState([0]);
 
   const onAddSingerDiv = () => {
@@ -206,7 +215,25 @@ function RegisterPage() {
     // countArr[counter] = counter	// index 사용 시 윗줄 대신 사용
     setCountSingerList(countArr);
   };
+
+  const onDeleteSingerDiv = () => {
+    let countArr = [...countSingerList];
+    let counter = countArr.slice(-1)[0];
+    counter-=1;
+    countArr.pop(counter); // index 사용 X
+    // countArr[counter] = counter	// index 사용 시 윗줄 대신 사용
+    setCountSingerList(countArr);
+  };
+
   const navigate = useNavigate();
+
+  function clickSubmit(){
+    if(confirm('업로드하시겠습니까?')){
+        //form submit
+    }else{
+        return;
+    }
+}
 
   return (
     <ThemeProvider theme={theme}>
@@ -305,8 +332,11 @@ function RegisterPage() {
                     <CreateListDiv>
                       <div style={{ display: 'inline-block' }}>
                         <SingerList countSingerList={countSingerList} />
-                        <Button onClick={onAddSingerDiv} style={{ backgroundColor: '#7966ce', color: 'white' }}>
+                        <Button onClick={onAddSingerDiv} style={{ backgroundColor: '#7966ce', color: 'white'}}>
                           추가
+                        </Button>
+                        <Button onClick={onDeleteSingerDiv} style={{ backgroundColor: '#7966ce', color: 'white', marginLeft:'5px' }}>
+                          삭제
                         </Button>
                       </div>
                     </CreateListDiv>
@@ -319,6 +349,9 @@ function RegisterPage() {
                         <ComposerList countComposerList={countComposerList} />
                         <Button onClick={onAddComposerDiv} style={{ backgroundColor: '#7966ce', color: 'white' }}>
                           추가
+                        </Button>
+                        <Button onClick={onDeleteComposerDiv} style={{ backgroundColor: '#7966ce', color: 'white', marginLeft:'5px'  }}>
+                          삭제
                         </Button>
                       </div>
                     </CreateListDiv>
@@ -369,6 +402,7 @@ function RegisterPage() {
                   variant="contained"
                   sx={{ mt: 3, mb: 4 }}
                   style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
+                  onClick={clickSubmit}
                 >
                   업로드
                 </Button>
