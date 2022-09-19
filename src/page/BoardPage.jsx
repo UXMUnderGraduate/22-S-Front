@@ -10,6 +10,13 @@ import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
 const BoardPage = () => {
+  function CheckSession() {
+    if (localStorage.getItem("jwtToken") == null) {
+      window.location = "http://localhost:3000";
+    }
+  }
+  setInterval(CheckSession(), 100);
+
   const navigate = useNavigate();
   const [data, setData] = useState('');
   const test = [...data];

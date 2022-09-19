@@ -9,6 +9,16 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function LoginPage() {
+  function CheckSession() {
+    if (localStorage.getItem("jwtToken") == null) {
+      return;
+    }
+    else{
+      window.location = "http://localhost:3000/board";
+    }
+  }
+  setInterval(CheckSession(), 100);
+
   const theme = createTheme({
     palette: {
       primary: {
