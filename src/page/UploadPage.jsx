@@ -20,6 +20,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
 import * as contractApi from '../services/contract';
+import { useNavigate } from 'react-router-dom';
 
 const thumbsContainer = {
   display: 'flex',
@@ -87,7 +88,7 @@ function RegisterPage() {
   const [checked, setChecked] = useState(false);
   const [registerError, setRegisterError] = useState('');
   const token = localStorage.getItem('token');
-  let userId = '1';
+  let userId = localStorage.getItem('userId');
   let sellerContractAddress;
 
   const onhandlePost = async (data) => {
@@ -205,10 +206,19 @@ function RegisterPage() {
     // countArr[counter] = counter	// index 사용 시 윗줄 대신 사용
     setCountSingerList(countArr);
   };
+  const navigate = useNavigate();
 
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ height: '100%', backgroundImage: 'url(/images/background.png)' }}>
+        <Button
+          sx={{ display: 'block', color: '#ffffff' }}
+          onClick={() => {
+            navigate('/board');
+          }}
+        >
+          뒤로가기
+        </Button>
         <Container sx={{ color: '#ffffff' }} component="main" maxWidth="xs">
           <CssBaseline />
           <Box

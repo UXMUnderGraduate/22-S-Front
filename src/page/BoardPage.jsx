@@ -16,13 +16,14 @@ const BoardPage = () => {
 
   const token = localStorage.getItem('jwtToken');
   localStorage.setItem('type', jwtDecode(token).type);
+  localStorage.setItem('userId', jwtDecode(token).id);
   // console.log(jwtDecode(token).type);
 
   const getRes = async () => {
     await axios
       .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/music/chart?genre=Pop`, {
         headers: {
-          Authorization: `${token}`,
+          Authorization: token,
         },
       })
       .then((res) => {
@@ -37,6 +38,7 @@ const BoardPage = () => {
 
   useEffect(() => {
     getRes();
+    // window.location.reload(true);
   }, []);
 
   return (

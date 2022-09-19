@@ -12,11 +12,7 @@ function LibraryPage() {
   const itemDatas = [...data];
   const navigate = useNavigate();
   const token = localStorage.getItem('jwtToken');
-  const base64Payload = token.split('.')[1];
-  const payload = Buffer.from(base64Payload, 'base64');
-  const decodeData = JSON.parse(payload.toString());
-  const type = decodeData.type;
-  console.log(type);
+  const type = localStorage.getItem('type');
 
   const getPurchaseRes = async () => {
     await axios
@@ -57,6 +53,7 @@ function LibraryPage() {
 
   useEffect(() => {
     type === 'General' ? getPurchaseRes() : getUploadDataRes();
+    console.log(type);
   }, []);
   return (
     <Box sx={{ height: '100%', zIndex: 0 }}>
