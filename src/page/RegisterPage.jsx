@@ -82,11 +82,6 @@ function RegisterPage() {
   };
 
   const handleSubmit = (e) => {
-    if(confirm('회원가입하시겠습니까?')){
-      //form submit
-  }else{
-      return;
-  }
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
