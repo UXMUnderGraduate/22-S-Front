@@ -14,7 +14,7 @@ function LoginPage() {
       return;
     }
     else{
-      window.location = "http://localhost:3000/board";
+      useNavigate("/board")
     }
   }
   setInterval(CheckSession(), 100);

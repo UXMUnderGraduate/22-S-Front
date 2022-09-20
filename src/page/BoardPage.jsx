@@ -12,7 +12,7 @@ import jwtDecode from 'jwt-decode';
 const BoardPage = () => {
   function CheckSession() {
     if (localStorage.getItem("jwtToken") == null) {
-      window.location = "http://localhost:3000";
+      useNavigate("/");
     }
   }
   setInterval(CheckSession(), 100);
