@@ -1,28 +1,12 @@
-// import Web3 from "web3";
-import Metamask from './metamask.js';
 import Web3 from 'web3';
-
-let bytecodeSettle;
-let abiSettle;
-
-//index.html의 실행 위치에 따른 상대경로
-const importData = async () => {
-  bytecodeSettle = './assets/contracts_SettlementContract_sol_SettlementContract.txt';
-  // bytecodeSettle = await fetch(
-  //   "../assets/contracts_SettlementContract_sol_SettlementContract.txt"
-  // ).then((txt) => txt.text());
-  abiSettle = await fetch('./assets/contracts_SettlementContract_sol_SettlementContract.json').then((res) =>
-    res.json(),
-  );
-};
+import Metamask from './metamask';
+import bytecodeSettle from '../assets/contracts_SettlementContract_sol_SettlementContract.txt';
+import abiSettle from '../assets/contracts_SettlementContract_sol_SettlementContract.json';
 
 const metamask = new Metamask();
 
 export const init = async () => {
   await metamask.init();
-  await importData();
-  // console.log(abiSeller);
-  // console.log(abiSettle);
 };
 
 export const deployContract = {
