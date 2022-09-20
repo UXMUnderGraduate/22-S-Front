@@ -19,7 +19,7 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
-import * as contractApi from '../services/contract';
+// import * as contractApi from '../services/contract';
 import { useNavigate } from 'react-router-dom';
 
 const thumbsContainer = {
@@ -92,8 +92,8 @@ function RegisterPage() {
   // let sellerContractAddress;
 
   const onhandlePost = async (data) => {
-    const { title, album, lylics, file, image } = data;
-    const postData = { title, album, lylics, genre, file, image };
+    const { title, album, lyrics, file, image } = data;
+    const postData = { title, album, lyrics, genre, file, image };
 
     // post
     await axios
@@ -137,6 +137,10 @@ function RegisterPage() {
       image: data.get('image'),
       genre: genreType,
     };
+    if (data.getAll('copyright').reduce((acc, curr) => Number(acc) + Number(curr)) != 1) {
+      alert('저작권 비율의 총 합은 1이여야 합니다!');
+      return;
+    }
 
     // 회원가입 동의 체크
     if (!checked) alert('올바른 양식과 함께 업로드 약관에 동의해주세요.');
