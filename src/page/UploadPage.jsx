@@ -19,7 +19,7 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
-import * as contractApi from '../services/contract';
+// import * as contractApi from '../services/contract';
 import { useNavigate } from 'react-router-dom';
 
 const thumbsContainer = {
