@@ -228,7 +228,7 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   function clickSubmit(){
-    if(confirm('업로드하시겠습니까?')){
+    if(confirm('한번 업로드 하면 수정이 불가능합니다. 업로드 하시겠습니까?')){
         //form submit
     }else{
         return;
