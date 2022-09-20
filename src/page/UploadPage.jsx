@@ -19,7 +19,7 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
-import * as contractApi from '../services/contract';
+// import * as contractApi from '../services/contract';
 import { useNavigate } from 'react-router-dom';
 
 const thumbsContainer = {
@@ -88,8 +88,8 @@ function RegisterPage() {
   const [checked, setChecked] = useState(false);
   const [registerError, setRegisterError] = useState('');
   const token = localStorage.getItem('token');
-  let userId = localStorage.getItem('userId');
-  let sellerContractAddress;
+  // let userId = localStorage.getItem('userId');
+  // let sellerContractAddress;
 
   const onhandlePost = async (data) => {
     const { title, album, lylics, file, image } = data;
@@ -120,14 +120,6 @@ function RegisterPage() {
 
   const handleAgree = (event) => {
     setChecked(event.target.checked);
-  };
-
-  const handleCreateSellerContract = async (userId) => {
-    await contractApi.init();
-    const sellerContract = await contractApi.deployContract.seller(userId);
-    sellerContractAddress = sellerContract.options.address;
-    console.log(sellerContract);
-    console.log(`sellerContractAddress: ${sellerContractAddress}`);
   };
 
   const handleSubmit = (e) => {
@@ -352,17 +344,6 @@ function RegisterPage() {
                     />
                   </Grid>
                 </Grid>
-                <Button
-                  onClick={async () => {
-                    handleCreateSellerContract(userId);
-                  }}
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 1 }}
-                  style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
-                >
-                  SellerContract 생성
-                </Button>
                 <Button
                   type="submit"
                   fullWidth
