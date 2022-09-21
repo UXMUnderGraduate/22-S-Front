@@ -1,8 +1,6 @@
 import Metamask from './metamask';
 import Web3 from 'web3';
 
-import bytecodeSeller from '../assets/contracts_SellerContract_sol_SellerContract.txt';
-import abiSeller from '../assets/contracts_SellerContract_sol_SellerContract.json';
 import bytecodeSettle from '../assets/contracts_SettlementContract_sol_SettlementContract.txt';
 import abiSettle from '../assets/contracts_SettlementContract_sol_SettlementContract.json';
 
@@ -34,12 +32,6 @@ export const deployContract = {
         return newContractInstance;
       });
   },
-  seller: async (userId) => {
-    const args = [Web3.utils.toHex(userId.toString())];
-    const deployedSellerContract = await deployContract.deploy(abiSeller, bytecodeSeller, metamask.account, args);
-    console.log(`Seller contract  deployed: ${deployedSellerContract.options.address}`);
-    return deployedSellerContract;
-  },
   settlement: async (scAddress, addresses, proportions, songCid, price) => {
     const bytes = [
       Web3.utils.padRight(Web3.utils.toHex(songCid.substr(0, 32)), 64),
@@ -49,24 +41,6 @@ export const deployContract = {
     const deployedSettleContract = await deployContract.deploy(abiSettle, bytecodeSettle, metamask.account, args);
     console.log(`Settlement contract deployed: ${deployedSettleContract.options.address}`);
     return deployedSettleContract;
-  },
-};
-
-export const sellerContract = {
-  instance: null,
-  load: (sellerAddr) => {
-    sellerContract.instance = new metamask.web3.eth.Contract(abiSeller, sellerAddr);
-    sellerContract.instance.setProvider(metamask.web3Provider);
-    console.log('Seller contract loaded:');
-    console.log(sellerContract.instance);
-  },
-  variables: {
-    getContractInitatorAddress: async () => {
-      return sellerContract.instance.methods.contractInitatorAddress().call();
-    },
-    getUserId: async () => {
-      return sellerContract.instance.methods.userId().call();
-    },
   },
 };
 
