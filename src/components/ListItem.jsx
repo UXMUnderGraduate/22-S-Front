@@ -37,6 +37,7 @@ export default function ListItem(props) {
   ) : (
     <Box sx={{ display: 'flex', textAlign: 'center', border: '0.5px solid', margin: '1.3%', borderRadius: '0.2em' }}>
       <Box sx={{ width: '33%' }}>{props.title}</Box>
+      {type === 'General' ? <Box sx={{ width: '33%' }}>{props.artist}</Box> : null}
       <Box sx={{ width: '33%' }}>{props.album}</Box>
       <Box sx={{ width: '33%' }}>
         {type === 'Producer' ? (
