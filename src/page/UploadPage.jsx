@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import {
   Button,
@@ -19,8 +19,17 @@ import {
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
-import * as contractApi from '../services/contract';
 import { useNavigate } from 'react-router-dom';
+import {
+  InputBase,
+  ListItemButton,
+  Drawer,
+  List,
+  Divider,
+  ListItem,
+  ListItemText,
+} from '@mui/material';
+
 
 const thumbsContainer = {
   display: 'flex',
@@ -70,7 +79,15 @@ const Boxs = styled(Box)`
   padding-bottom: 40px !important;
 `;
 
-function RegisterPage() {
+function UploadPage() {
+  
+  function CheckSession() {
+    if (localStorage.getItem("jwtToken") == null) {
+      window.location = "http://localhost:3000";
+    }
+  }
+  setInterval(CheckSession(), 100);
+
   const theme = createTheme({
     palette: {
       primary: {
@@ -86,12 +103,12 @@ function RegisterPage() {
   });
   const [genre, setGenre] = useState('R&B');
   const [checked, setChecked] = useState(false);
-  const [registerError, setRegisterError] = useState('');
+  const [musicError, setMusicError] = useState(false);
+  const [UploadError, setUploadError] = useState('');
   const token = localStorage.getItem('token');
-  let userId = localStorage.getItem('userId');
-  let sellerContractAddress;
 
   const onhandlePost = async (data) => {
+    console.log("name")
     const { title, album, lylics, file, image } = data;
     const postData = { title, album, lylics, genre, file, image };
 
@@ -110,7 +127,7 @@ function RegisterPage() {
       })
       .catch(function (err) {
         console.log(err);
-        setRegisterError('업로드에 실패하였습니다. 다시한번 확인해 주세요.');
+        setUploadError('업로드에 실패하였습니다. 다시한번 확인해 주세요.');
       });
   };
 
@@ -120,14 +137,6 @@ function RegisterPage() {
 
   const handleAgree = (event) => {
     setChecked(event.target.checked);
-  };
-
-  const handleCreateSellerContract = async (userId) => {
-    await contractApi.init();
-    const sellerContract = await contractApi.deployContract.seller(userId);
-    sellerContractAddress = sellerContract.options.address;
-    console.log(sellerContract);
-    console.log(`sellerContractAddress: ${sellerContractAddress}`);
   };
 
   const handleSubmit = (e) => {
@@ -145,6 +154,30 @@ function RegisterPage() {
       image: data.get('image'),
       genre: genreType,
     };
+    
+    //중복곡 체크
+    const musicCheck =document.getElementById('file').value;
+    if (!musicCheck) {
+      setMusicError('파일을 업로드 해주세요');
+    } else {
+      axios({
+        method: 'post',
+        url: `http://${process.env.REACT_APP_BACKEND_URL}/api/v1/upload/check`,
+        data: {
+          music: e.target.value,
+        },
+      })
+        .then((res) => {
+          if (res.data !== null) {
+            setMusicError('');
+          } else {
+            setMusicError('이미 존재하는 음악입니다.');
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
 
     // 회원가입 동의 체크
     if (!checked) alert('올바른 양식과 함께 업로드 약관에 동의해주세요.');
@@ -192,7 +225,7 @@ function RegisterPage() {
     let counter = countArr.slice(-1)[0];
     counter += 1;
     countArr.push(counter); // index 사용 X
-    // countArr[counter] = counter	// index 사용 시 윗줄 대신 사용
+    // countArr[counter] = counter   // index 사용 시 윗줄 대신 사용
     setCountComposerList(countArr);
   };
 
@@ -201,7 +234,7 @@ function RegisterPage() {
     let counter = countArr.slice(-1)[0];
     counter-=1;
     countArr.pop(counter); // index 사용 X
-    // countArr[counter] = counter	// index 사용 시 윗줄 대신 사용
+    // countArr[counter] = counter   // index 사용 시 윗줄 대신 사용
     setCountComposerList(countArr);
   };
 
@@ -212,7 +245,7 @@ function RegisterPage() {
     let counter = countArr.slice(-1)[0];
     counter += 1;
     countArr.push(counter); // index 사용 X
-    // countArr[counter] = counter	// index 사용 시 윗줄 대신 사용
+    // countArr[counter] = counter   // index 사용 시 윗줄 대신 사용
     setCountSingerList(countArr);
   };
 
@@ -221,7 +254,7 @@ function RegisterPage() {
     let counter = countArr.slice(-1)[0];
     counter-=1;
     countArr.pop(counter); // index 사용 X
-    // countArr[counter] = counter	// index 사용 시 윗줄 대신 사용
+    // countArr[counter] = counter   // index 사용 시 윗줄 대신 사용
     setCountSingerList(countArr);
   };
 
@@ -234,7 +267,6 @@ function RegisterPage() {
         return;
     }
 }
-
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ height: '100%', backgroundImage: 'url(/images/background.png)' }}>
@@ -321,10 +353,11 @@ function RegisterPage() {
                     <input
                       type="file"
                       id="file"
-                      accept="music/mp3, music/mp4, music/flac, music/ogg, music/mp2, music/m4r"
+                      accept="audio/*"
                       textDecoration="none"
                       style={{ color: 'white', borderBox: 'white' }}
                     />
+                    <FormHelperTexts>{musicError}</FormHelperTexts>
                   </Grid>
 
                   <Grid item xs={12}>
@@ -386,17 +419,6 @@ function RegisterPage() {
                   </Grid>
                 </Grid>
                 <Button
-                  onClick={async () => {
-                    handleCreateSellerContract(userId);
-                  }}
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 1 }}
-                  style={{ backgroundColor: '#7966ce', height: '60px', fontSize: '20px' }}
-                >
-                  SellerContract 생성
-                </Button>
-                <Button
                   type="submit"
                   fullWidth
                   variant="contained"
@@ -407,7 +429,7 @@ function RegisterPage() {
                   업로드
                 </Button>
               </FormControl>
-              <FormHelperTexts>{registerError}</FormHelperTexts>
+              <FormHelperTexts>{UploadError}</FormHelperTexts>
             </Boxs>
           </Box>
         </Container>
@@ -416,7 +438,25 @@ function RegisterPage() {
   );
 }
 
-export default RegisterPage;
+export default UploadPage;
+
+const StyledInputBase = styled(InputBase)(() => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    // padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    // transition: theme.transitions.create('width'),
+    backgroundColor:"white",
+    height:"85%",
+    width: '100%',
+    // [theme.breakpoints.up('md')]: {
+    //   width: '20ch',
+    // },
+  },
+}));
+
+const ariaLabel = { 'aria-label': 'search' };
 
 //참여자 추가
 const DetailDiv = styled.div`
@@ -434,6 +474,79 @@ const CreateListDiv = styled.div`
 `;
 
 const ComposerList = (props) => {
+    const [state, setState] = React.useState({
+      bottom: false,
+    });
+  
+    const anchor = 'bottom';
+  
+    const toggleDrawer = (anchor, open) => (event) => {
+      handleOnClick();
+      console.log(data);
+      if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+        return;
+      }
+      setState({ ...state, [anchor]: open });
+    };
+  
+    const list = (anchor) => (
+      <Box
+      style={{fontColor:"red"}}
+        sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+        role="presentation"
+        onClick={toggleDrawer(anchor, false)}
+        onKeyDown={toggleDrawer(anchor, false)}
+      >
+        <List>
+          {data.map((item) => (
+            <ListItem style={{color:"Black"}} key={item.id}>
+              <ListItemButton
+                onClick={console.log(item.id)} >
+                <ListItemText primary={item.nickname} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+      </Box>
+    );
+  
+    const [data, setData] = useState([]);
+  
+    // const theme = createTheme({
+    //   palette: {
+    //     mode: 'dark',
+    //   },
+    //   header: {
+    //     main: 'transparent',
+    //   },
+    // });
+    const token = localStorage.getItem('jwtToken');
+  
+    const [search, setSearch] = useState('');
+    const onChangeSearch = (e) => {
+      setSearch(e.target.value);
+      toggleDrawer(anchor, true);
+    };
+  
+    const handleOnClick = async () => {
+      console.log(search);
+      // console.log(token);
+      await axios
+        .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/user?search=${search}`, {
+          headers: {
+            authorization: token,
+          },
+        })
+        .then((res) => {
+          setData(res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+   
+  
   return (
     <DetailDiv>
       {props.countComposerList &&
@@ -441,17 +554,17 @@ const ComposerList = (props) => {
           <div key={i}>
             <div>
               <Grid item xs={12} sm={8}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="name"
-                  label="작곡가"
-                  name="name"
-                  autoComplete="name"
-                  sx={{ backgroundColor: 'white' }}
-                  color="secondary"
-                />
+              <StyledInputBase
+                required
+                placeholder="작곡가 이메일"
+                inputProps={ariaLabel}
+                onChange={onChangeSearch}
+              />
+              <Button style={{backgroundColor:"white", height:"95%"}} onClick={toggleDrawer(anchor, true)}> <SearchIcon/></Button>
+              <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+                {list(anchor)}
+              </Drawer>
+                
               </Grid>
               <Grid item xs={12} sm={4}>
                 <TextField
@@ -466,7 +579,10 @@ const ComposerList = (props) => {
                   color="secondary"
                 />
               </Grid>
+              <Grid item xs={12} sm={2}>
+              <Button style={{backgroundColor: '#7966ce', color: 'white'}} >등록</Button></Grid>
             </div>
+           
           </div>
         ))}
     </DetailDiv>
@@ -474,26 +590,89 @@ const ComposerList = (props) => {
 };
 
 const SingerList = (props) => {
+  const [state, setState] = React.useState({
+    bottom: false,
+  });
+
+  const anchor = 'bottom';
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    handleOnClick();
+    console.log(data)
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setState({ ...state, [anchor]: open });
+  };
+
+  const list = (anchor) => (
+    <Box
+      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        {data.map((item) => (
+          <ListItem style={{color:"Black"}} key={item.id}>
+            <ListItemButton
+               onClick={console.log(item.id)}>
+              <ListItemText primary={item.nickname} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+    </Box>
+  );
+
+  const [data, setData] = useState([]);
+
+  const token = localStorage.getItem('jwtToken');
+
+  const [search, setSearch] = useState('');
+  const onChangeSearch = (e) => {
+    setSearch(e.target.value);
+    toggleDrawer(anchor, true);
+  };
+
+  const handleOnClick = async () => {
+    console.log(search)
+    await axios
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/user?search=${search}`, {
+        headers: {
+          authorization: token,
+        },
+      })
+      .then((res) => {
+        setData(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <DetailDiv>
       {props.countSingerList &&
         props.countSingerList.map((item, i) => (
           <div key={i}>
             <div>
-              <Grid item xs={12} sm={8}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="singer"
-                  label="가수"
-                  name="singer"
-                  autoComplete="singer"
-                  sx={{ backgroundColor: 'white' }}
-                  color="secondary"
-                />
+            <Grid item xs={12} sm={8}>
+              <StyledInputBase
+                required
+                placeholder="가수 이메일"
+                inputProps={ariaLabel}
+                onChange={onChangeSearch}
+              />
+              <Button style={{backgroundColor:"white", height:"95%"}} onClick={toggleDrawer(anchor, true)}> <SearchIcon/></Button>
+              <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+                {list(anchor)}
+              </Drawer>
+                
               </Grid>
               <Grid item xs={12} sm={4}>
+                
                 <TextField
                   variant="outlined"
                   required
@@ -504,8 +683,11 @@ const SingerList = (props) => {
                   autoComplete="copyright"
                   sx={{ backgroundColor: 'white' }}
                   color="secondary"
+
                 />
               </Grid>
+              <Grid item xs={12} sm={2}>
+              <Button style={{backgroundColor: '#7966ce', color: 'white'}} >등록</Button></Grid>
             </div>
           </div>
         ))}
