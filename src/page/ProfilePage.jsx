@@ -45,8 +45,8 @@ function ProfilePage() {
         >
           뒤로가기
         </Button>
-        <AccountCircleIcon sx={{ fontSize: '600%', margin: '10%' }} />
-        <Typography variant="h2" component="h2" fontWeight="400" sx={{ paddingTop: '2%' }}>
+        <AccountCircleIcon sx={{ fontSize: '600%', margin: '3vh' }} />
+        <Typography variant="h2" component="h2" fontWeight="400" sx={{ paddingTop: '2vh' }}>
           My Profile
         </Typography>
         <MyProfile key={data.id} name={data.name} nickName={data.nickname} wallet={data.wallet}/>
