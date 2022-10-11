@@ -70,12 +70,12 @@ const Boxs = styled(Box)`
 `;
 
 function UploadPage() {
-  function CheckSession() {
+  function checklocalStorage() {
     if (localStorage.getItem('jwtToken') == null) {
       window.location = 'http://localhost:3000';
     }
   }
-  setInterval(CheckSession(), 100);
+  setInterval(checklocalStorage(), 100);
 
   const theme = createTheme({
     palette: {
