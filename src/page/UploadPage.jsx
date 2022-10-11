@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
 import {
   Button,
@@ -20,16 +19,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from 'styled-components';
 import { useDropzone } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
-import {
-  InputBase,
-  ListItemButton,
-  Drawer,
-  List,
-  Divider,
-  ListItem,
-  ListItemText,
-} from '@mui/material';
-
+import { InputBase, ListItemButton, Drawer, List, Divider, ListItem, ListItemText } from '@mui/material';
 
 const thumbsContainer = {
   display: 'flex',
@@ -80,10 +70,9 @@ const Boxs = styled(Box)`
 `;
 
 function UploadPage() {
-  
   function CheckSession() {
-    if (localStorage.getItem("jwtToken") == null) {
-      window.location = "http://localhost:3000";
+    if (localStorage.getItem('jwtToken') == null) {
+      window.location = 'http://localhost:3000';
     }
   }
   setInterval(CheckSession(), 100);
@@ -105,18 +94,18 @@ function UploadPage() {
   const [checked, setChecked] = useState(false);
   const [musicError, setMusicError] = useState(false);
   const [UploadError, setUploadError] = useState('');
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('jwtToken');
 
   const onhandlePost = async (data) => {
-    console.log("name")
-    const { title, album, lylics, file, image } = data;
-    const postData = { title, album, lylics, genre, file, image };
+    console.log('name');
+    const { title, album, lylics, file, image, holder, rate } = data;
+    const postData = { title, album, lylics, genre, file, image, holder, rate };
 
     // post
     await axios
-      .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/upload`, {
+      .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/upload`,postData, {
         headers: {
-          authorization: `${token}`,
+          authorization: token,
         },
         data: postData,
       })
@@ -153,10 +142,12 @@ function UploadPage() {
       file: data.get('file'),
       image: data.get('image'),
       genre: genreType,
+      holder: data.get('holder'),
+      rate: data.get('rate'),
     };
-    
+
     //중복곡 체크
-    const musicCheck =document.getElementById('file').value;
+    const musicCheck = document.getElementById('file').value;
     if (!musicCheck) {
       setMusicError('파일을 업로드 해주세요');
     } else {
@@ -232,7 +223,7 @@ function UploadPage() {
   const onDeleteComposerDiv = () => {
     let countArr = [...countComposerList];
     let counter = countArr.slice(-1)[0];
-    counter-=1;
+    counter -= 1;
     countArr.pop(counter); // index 사용 X
     // countArr[counter] = counter   // index 사용 시 윗줄 대신 사용
     setCountComposerList(countArr);
@@ -252,7 +243,7 @@ function UploadPage() {
   const onDeleteSingerDiv = () => {
     let countArr = [...countSingerList];
     let counter = countArr.slice(-1)[0];
-    counter-=1;
+    counter -= 1;
     countArr.pop(counter); // index 사용 X
     // countArr[counter] = counter   // index 사용 시 윗줄 대신 사용
     setCountSingerList(countArr);
@@ -260,13 +251,13 @@ function UploadPage() {
 
   const navigate = useNavigate();
 
-  function clickSubmit(){
-    if(confirm('한번 업로드 하면 수정이 불가능합니다. 업로드 하시겠습니까?')){
-        //form submit
-    }else{
-        return;
+  function clickSubmit() {
+    if (confirm('한번 업로드 하면 수정이 불가능합니다. 업로드 하시겠습니까?')) {
+      //form submit
+    } else {
+      return;
     }
-}
+  }
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ height: '100%', backgroundImage: 'url(/images/background.png)' }}>
@@ -364,11 +355,14 @@ function UploadPage() {
                     <label style={{ color: 'white' }}>참여 가수</label>
                     <CreateListDiv>
                       <div style={{ display: 'inline-block' }}>
-                        <SingerList countSingerList={countSingerList} />
-                        <Button onClick={onAddSingerDiv} style={{ backgroundColor: '#7966ce', color: 'white'}}>
+                        {/* <SingerList countSingerList={countSingerList} /> */}
+                        <Button onClick={onAddSingerDiv} style={{ backgroundColor: '#7966ce', color: 'white' }}>
                           추가
                         </Button>
-                        <Button onClick={onDeleteSingerDiv} style={{ backgroundColor: '#7966ce', color: 'white', marginLeft:'5px' }}>
+                        <Button
+                          onClick={onDeleteSingerDiv}
+                          style={{ backgroundColor: '#7966ce', color: 'white', marginLeft: '5px' }}
+                        >
                           삭제
                         </Button>
                       </div>
@@ -383,7 +377,10 @@ function UploadPage() {
                         <Button onClick={onAddComposerDiv} style={{ backgroundColor: '#7966ce', color: 'white' }}>
                           추가
                         </Button>
-                        <Button onClick={onDeleteComposerDiv} style={{ backgroundColor: '#7966ce', color: 'white', marginLeft:'5px'  }}>
+                        <Button
+                          onClick={onDeleteComposerDiv}
+                          style={{ backgroundColor: '#7966ce', color: 'white', marginLeft: '5px' }}
+                        >
                           삭제
                         </Button>
                       </div>
@@ -447,8 +444,8 @@ const StyledInputBase = styled(InputBase)(() => ({
     // vertical padding + font size from searchIcon
     // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     // transition: theme.transitions.create('width'),
-    backgroundColor:"white",
-    height:"85%",
+    backgroundColor: 'white',
+    height: '85%',
     width: '100%',
     // [theme.breakpoints.up('md')]: {
     //   width: '20ch',
@@ -474,122 +471,6 @@ const CreateListDiv = styled.div`
 `;
 
 const ComposerList = (props) => {
-    const [state, setState] = React.useState({
-      bottom: false,
-    });
-  
-    const anchor = 'bottom';
-  
-    const toggleDrawer = (anchor, open) => (event) => {
-      handleOnClick();
-      console.log(data);
-      if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-        return;
-      }
-      setState({ ...state, [anchor]: open });
-    };
-  
-    const list = (anchor) => (
-      <Box
-      style={{fontColor:"red"}}
-        sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
-        role="presentation"
-        onClick={toggleDrawer(anchor, false)}
-        onKeyDown={toggleDrawer(anchor, false)}
-      >
-        <List>
-          {data.map((item) => (
-            <ListItem style={{color:"Black"}} key={item.id}>
-              <ListItemButton
-                onClick={console.log(item.id)} >
-                <ListItemText primary={item.nickname} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-      </Box>
-    );
-  
-    const [data, setData] = useState([]);
-  
-    // const theme = createTheme({
-    //   palette: {
-    //     mode: 'dark',
-    //   },
-    //   header: {
-    //     main: 'transparent',
-    //   },
-    // });
-    const token = localStorage.getItem('jwtToken');
-  
-    const [search, setSearch] = useState('');
-    const onChangeSearch = (e) => {
-      setSearch(e.target.value);
-      toggleDrawer(anchor, true);
-    };
-  
-    const handleOnClick = async () => {
-      console.log(search);
-      // console.log(token);
-      await axios
-        .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/user?search=${search}`, {
-          headers: {
-            authorization: token,
-          },
-        })
-        .then((res) => {
-          setData(res.data.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-   
-  
-  return (
-    <DetailDiv>
-      {props.countComposerList &&
-        props.countComposerList.map((item, i) => (
-          <div key={i}>
-            <div>
-              <Grid item xs={12} sm={8}>
-              <StyledInputBase
-                required
-                placeholder="작곡가 이메일"
-                inputProps={ariaLabel}
-                onChange={onChangeSearch}
-              />
-              <Button style={{backgroundColor:"white", height:"95%"}} onClick={toggleDrawer(anchor, true)}> <SearchIcon/></Button>
-              <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
-                {list(anchor)}
-              </Drawer>
-                
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="copyright"
-                  label="저작권 비율"
-                  name="copyright"
-                  autoComplete="copyright"
-                  sx={{ backgroundColor: 'white' }}
-                  color="secondary"
-                />
-              </Grid>
-              <Grid item xs={12} sm={2}>
-              <Button style={{backgroundColor: '#7966ce', color: 'white'}} >등록</Button></Grid>
-            </div>
-           
-          </div>
-        ))}
-    </DetailDiv>
-  );
-};
-
-const SingerList = (props) => {
   const [state, setState] = React.useState({
     bottom: false,
   });
@@ -598,15 +479,24 @@ const SingerList = (props) => {
 
   const toggleDrawer = (anchor, open) => (event) => {
     handleOnClick();
-    console.log(data)
+
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
     setState({ ...state, [anchor]: open });
   };
 
+  // const Navigate = useNavigate();
+  const [holder, setholder]=useState([])
+  const holderlist = (item) => {
+    setholder((holder) => {
+      console.log(holder);
+      return [...holder, item];
+    });
+  };
   const list = (anchor) => (
     <Box
+      style={{ fontColor: 'red' }}
       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
       role="presentation"
       onClick={toggleDrawer(anchor, false)}
@@ -614,9 +504,8 @@ const SingerList = (props) => {
     >
       <List>
         {data.map((item) => (
-          <ListItem style={{color:"Black"}} key={item.id}>
-            <ListItemButton
-               onClick={console.log(item.id)}>
+          <ListItem style={{ color: 'Black' }} key={item.id}>
+            <ListItemButton onClick={()=>holderlist(item.id)}>
               <ListItemText primary={item.nickname} />
             </ListItemButton>
           </ListItem>
@@ -631,21 +520,48 @@ const SingerList = (props) => {
   const token = localStorage.getItem('jwtToken');
 
   const [search, setSearch] = useState('');
+
+  const [copyright, setcopyright]=useState([])
+ 
+  const copyrightlist = (e) => {
+      setcopyright((copyright) => {
+        return [...copyright, e.target.value];
+      });
+  };
+
+  const handleOnKeyPress = (e) => {
+    if (e.key == ' ') {
+      copyrightlist(e);
+    }
+  };
+
   const onChangeSearch = (e) => {
     setSearch(e.target.value);
     toggleDrawer(anchor, true);
   };
 
+  // const onClickSearch = async () => {
+  //   console.log('로그인');
+  // };
+
   const handleOnClick = async () => {
-    console.log(search)
+    // console.log(token);
+
     await axios
       .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/user?search=${search}`, {
         headers: {
           authorization: token,
         },
+        params: {
+          holder
+        },
       })
       .then((res) => {
         setData(res.data.data);
+        console.log(data);
+        console.log(search);
+        console.log(holder);
+        console.log(copyright)
       })
       .catch((err) => {
         console.log(err);
@@ -654,25 +570,19 @@ const SingerList = (props) => {
 
   return (
     <DetailDiv>
-      {props.countSingerList &&
-        props.countSingerList.map((item, i) => (
+      {props.countComposerList &&
+        props.countComposerList.map((i) => (
           <div key={i}>
             <div>
-            <Grid item xs={12} sm={8}>
-              <StyledInputBase
-                required
-                placeholder="가수 이메일"
-                inputProps={ariaLabel}
-                onChange={onChangeSearch}
-              />
-              <Button style={{backgroundColor:"white", height:"95%"}} onClick={toggleDrawer(anchor, true)}> <SearchIcon/></Button>
-              <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
-                {list(anchor)}
-              </Drawer>
-                
+              <Grid item xs={12} sm={8}>
+                <StyledInputBase
+                  required
+                  placeholder="작곡가 이메일"
+                  inputProps={ariaLabel}
+                  onChange={onChangeSearch}
+                />
               </Grid>
-              <Grid item xs={12} sm={4}>
-                
+              <Grid item xs={12} sm={8}>
                 <TextField
                   variant="outlined"
                   required
@@ -683,14 +593,127 @@ const SingerList = (props) => {
                   autoComplete="copyright"
                   sx={{ backgroundColor: 'white' }}
                   color="secondary"
-
+                  onKeyPress={handleOnKeyPress}
                 />
               </Grid>
-              <Grid item xs={12} sm={2}>
-              <Button style={{backgroundColor: '#7966ce', color: 'white'}} >등록</Button></Grid>
+              
+              <Button style={{ backgroundColor: 'white', height: '95%' }} onClick={toggleDrawer(anchor, true)}>
+                  {' '}
+                  등록
+                </Button>
+                <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+                  {list(anchor)}
+                </Drawer>
+
             </div>
           </div>
         ))}
     </DetailDiv>
   );
 };
+
+// const onClickSearch = async () => {
+//   console.log('로그인');
+// };
+
+// const SingerList = (props) => {
+//   const [state, setState] = React.useState({
+//     bottom: false,
+//   });
+
+//   const anchor = 'bottom';
+
+//   const toggleDrawer = (anchor, open) => (event) => {
+//     handleOnClick();
+//     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+//       return;
+//     }
+//     setState({ ...state, [anchor]: open });
+//   };
+
+//   const list = (anchor) => (
+//     <Box
+//       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+//       role="presentation"
+//       onClick={toggleDrawer(anchor, false)}
+//       onKeyDown={toggleDrawer(anchor, false)}
+//     >
+//       <List>
+//         {data.map((item) => (
+//           <ListItem style={{ color: 'Black' }} key={item.id}>
+//             <ListItemButton>
+//               <ListItemText primary={item.nickname} onClick={onClickSearch}></ListItemText>
+//             </ListItemButton>
+//           </ListItem>
+//         ))}
+//       </List>
+//       <Divider />
+//     </Box>
+//   );
+
+//   const [data, setData] = useState([]);
+
+//   const token = localStorage.getItem('jwtToken');
+
+//   const [search, setSearch] = useState('');
+
+//   const onChangeSearch = (e) => {
+//     setSearch(e.target.value);
+//     toggleDrawer(anchor, true);
+//   };
+
+//   const handleOnClick = async () => {
+//     await axios
+//       .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/user?search=${search}`, {
+//         headers: {
+//           authorization: token,
+//         },
+//       })
+//       .then((res) => {
+//         const data = res.data;
+//         setData(data.data);
+//         console.log(data.data);
+//       })
+//       .catch((err) => {
+//         console.log(err);
+//       });
+//   };
+
+//   return (
+//     <DetailDiv>
+//       {props.countSingerList &&
+//         props.countSingerList.map((item, i) => (
+//           <div key={i}>
+//             <div>
+//               <Grid item xs={12} sm={8}>
+//                 <StyledInputBase required placeholder="가수 이메일" inputProps={ariaLabel} onChange={onChangeSearch} />
+//                 <Button style={{ backgroundColor: 'white', height: '95%' }} onClick={toggleDrawer(anchor, true)}>
+//                   {' '}
+//                   <SearchIcon />
+//                 </Button>
+//                 <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+//                   {list(anchor)}
+//                 </Drawer>
+//               </Grid>
+//               <Grid item xs={12} sm={4}>
+//                 <TextField
+//                   variant="outlined"
+//                   required
+//                   fullWidth
+//                   id="copyright"
+//                   label="저작권 비율"
+//                   name="copyright"
+//                   autoComplete="copyright"
+//                   sx={{ backgroundColor: 'white' }}
+//                   color="secondary"
+//                 />
+//               </Grid>
+//               <Grid item xs={12} sm={2}>
+//                 <Button style={{ backgroundColor: '#7966ce', color: 'white' }}>등록</Button>
+//               </Grid>
+//             </div>
+//           </div>
+//         ))}
+//     </DetailDiv>
+//   );
+// };
