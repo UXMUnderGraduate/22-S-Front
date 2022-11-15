@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState , useEffect} from 'react';
 import axios from 'axios';
 import {
   Button,
   CssBaseline,
   TextField,
   FormControl,
-  FormControlLabel,
-  Checkbox,
-  FormHelperText,
+  createTheme,
+  ThemeProvider,
   Grid,
   Box,
+  Checkbox,
+  FormControlLabel,
+  FormHelperText,
   Typography,
   Container,
   Select,
   MenuItem,
 } from '@mui/material/';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import styled from 'styled-components';
-import { useDropzone } from 'react-dropzone';
 import { useNavigate } from 'react-router-dom';
-import { InputBase, ListItemButton, Drawer, List, Divider, ListItem, ListItemText } from '@mui/material';
-
+import { useDropzone } from 'react-dropzone';
+import styled from 'styled-components';
+import {  ListItemButton, Drawer, List, Divider, ListItem, ListItemText } from '@mui/material';
+const Boxs = styled(Box)`
+  padding-bottom: 40px !important;
+`;
 const thumbsContainer = {
   display: 'flex',
   flexDirection: 'row',
@@ -57,16 +60,11 @@ const img = {
   width: 220,
   height: 220,
 };
-
 const FormHelperTexts = styled(FormHelperText)`
   width: 100%;
   padding-left: 16px;
   font-weight: 700 !important;
   color: #d32f2f !important;
-`;
-
-const Boxs = styled(Box)`
-  padding-bottom: 40px !important;
 `;
 
 function UploadPage() {
@@ -90,16 +88,158 @@ function UploadPage() {
       },
     },
   });
-  const [genre, setGenre] = useState('R&B');
+  const navigate = useNavigate();
+  const [state, setState] = React.useState({
+    bottom: false,
+  });
+  const [data, setData] = useState([]);
+  const [holder, setholder]=useState([]);
+  const [rate, setRate]=useState([])
+  const [image, setImage] = useState('');
   const [checked, setChecked] = useState(false);
-  const [musicError, setMusicError] = useState(false);
-  const [UploadError, setUploadError] = useState('');
+  const [file, setFile] = useState([]);
+  const [genre, setGenre] = useState('R&B');
   const token = localStorage.getItem('jwtToken');
+  const [search, setSearch] = useState('');
+  const ariaLabel = { 'aria-label': 'search' };
+  const anchor = 'bottom';
+  const [musicError, setMusicError] = useState(false);
+  const [rateError, setRateError] = useState(false);
+  const [UploadError, setUploadError] = useState('');
+
+  const handleImage = (event) => {
+    setImage(event.target.value)
+  };
+
+  const handleAgree = (event) => {
+    setChecked(event.target.checked);
+  };
+
+  const handleChange = (event) => {
+    setGenre(event.target.value);
+  };
+
+  const handleFile = (event) => {
+    setFile(event.target.value)
+  };
+
+  const handleOnKeyPress= (e) => {
+    if(e.key==" "){
+      handleRate(e);
+    }
+  }
+  const handleRate = (e) => {
+    setRate((rate) => {
+      return [...rate, e.target.value]
+    })
+  };
+
+  function clickSubmit() {
+    if (confirm('한번 업로드 하면 수정이 불가능합니다. 업로드 하시겠습니까?')) {
+      //form submit
+    } else {
+      return;
+    }
+  }
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    handleOnClick();
+
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setState({ ...state, [anchor]: open });
+  };
+
+  
+  const holderlist = (item) => {
+    setholder((holder) => {
+      console.log(holder);
+      return [...holder, item];
+    });
+  };
+  
+  const list = (anchor) => (
+    <Box
+      style={{ fontColor: 'red' }}
+      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        {data.map((item) => (
+          <ListItem style={{ color: 'Black' }} key={item.id}>
+            <ListItemButton onClick={()=>holderlist(item.id)}>
+              <ListItemText primary={item.nickname} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+    </Box>
+  );
+
+  const onChangeSearch = (e) => {
+    setSearch(e.target.value);
+    toggleDrawer(anchor, true);
+  };
+
+
+  const handleOnClick = async () => {
+    // console.log(token);
+
+    await axios
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/user?search=${search}`, {
+        headers: {
+          authorization: token,
+        }
+      })
+      .then((res) => {
+        setData(res.data.data);
+        console.log("데이터: ", data);
+        console.log("찾는 사람: ", search);
+        console.log("배열: ", holder);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  //앨범 커버 드래그앤드롭
+  const [images, setImages] = useState([]);
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: 'image/*',
+    onDrop: (acceptedImages) => {
+      setImages(
+        acceptedImages.map((image) =>
+          Object.assign(image, {
+            preview: URL.createObjectURL(image),
+          }),
+        ),
+      );
+      handleImage(image);
+    },
+  });
+
+  const thumbs = images.map((image) => (
+    <div style={thumb} key={image.name}>
+      <div style={thumbInner}>
+        <img src={image.preview} style={img} alt="" />
+      </div>
+    </div>
+  ));
+
+  useEffect(
+    () => () => {
+      // Make sure to revoke the Object URL to avoid memory leaks
+      images.forEach((image) => URL.revokeObjectURL(image.preview));
+    },
+    [images],
+  );
 
   const onhandlePost = async (data) => {
-    console.log('name');
-    const { title, album, lylics, file, image, holder, rate } = data;
-    const postData = { title, album, lylics, genre, file, image, holder, rate };
+    const { title, album, image, lylics, file, holder, rate } = data;
+    const postData = { title, album, lylics, image, genre, file,  holder, rate };
 
     // post
     await axios
@@ -120,30 +260,23 @@ function UploadPage() {
       });
   };
 
-  const handleChange = (event) => {
-    setGenre(event.target.value);
-  };
-
-  const handleAgree = (event) => {
-    setChecked(event.target.checked);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
     console.log(data);
     const genreType = genre;
+    
     const joinData = {
       title: data.get('title'),
       album: data.get('album'),
       name: data.get('name'),
       lylics: data.get('lylics'),
-      file: data.get('file'),
-      image: data.get('image'),
+      file: file,
+      image: image,
       genre: genreType,
-      holder: data.get('holder'),
-      rate: data.get('rate'),
+      holder: holder,
+      rate: rate
     };
 
     //중복곡 체크
@@ -169,6 +302,12 @@ function UploadPage() {
           console.error(err);
         });
     }
+    // 저작권 비율 체크
+    const sum = rate.reduce((accumultor, currentNumber)=>accumultor*1+currentNumber*1);
+    console.log(rate);
+    console.log(sum);
+    if (sum!=1) setRateError('저작권 총합이 1이하가 되도록 설정해주세요!');
+    else setRateError('');
 
     // 회원가입 동의 체크
     if (!checked) alert('올바른 양식과 함께 업로드 약관에 동의해주세요.');
@@ -177,87 +316,7 @@ function UploadPage() {
     }
   };
 
-  //엘범 커버 드래그앤드롭
-  const [files, setFiles] = useState([]);
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: 'image/*',
-    onDrop: (acceptedFiles) => {
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          }),
-        ),
-      );
-    },
-  });
 
-  const thumbs = files.map((file) => (
-    <div style={thumb} key={file.name}>
-      <div style={thumbInner}>
-        <img src={file.preview} style={img} alt="" />
-      </div>
-    </div>
-  ));
-
-  useEffect(
-    () => () => {
-      // Make sure to revoke the Object URL to avoid memory leaks
-      files.forEach((file) => URL.revokeObjectURL(file.preview));
-    },
-    [files],
-  );
-
-  //작곡가, 가수 추가 부분
-  const [countComposerList, setCountComposerList] = useState([0]);
-
-  const onAddComposerDiv = () => {
-    let countArr = [...countComposerList];
-    let counter = countArr.slice(-1)[0];
-    counter += 1;
-    countArr.push(counter); // index 사용 X
-    // countArr[counter] = counter   // index 사용 시 윗줄 대신 사용
-    setCountComposerList(countArr);
-  };
-
-  const onDeleteComposerDiv = () => {
-    let countArr = [...countComposerList];
-    let counter = countArr.slice(-1)[0];
-    counter -= 1;
-    countArr.pop(counter); // index 사용 X
-    // countArr[counter] = counter   // index 사용 시 윗줄 대신 사용
-    setCountComposerList(countArr);
-  };
-
-  const [countSingerList, setCountSingerList] = useState([0]);
-
-  const onAddSingerDiv = () => {
-    let countArr = [...countSingerList];
-    let counter = countArr.slice(-1)[0];
-    counter += 1;
-    countArr.push(counter); // index 사용 X
-    // countArr[counter] = counter   // index 사용 시 윗줄 대신 사용
-    setCountSingerList(countArr);
-  };
-
-  const onDeleteSingerDiv = () => {
-    let countArr = [...countSingerList];
-    let counter = countArr.slice(-1)[0];
-    counter -= 1;
-    countArr.pop(counter); // index 사용 X
-    // countArr[counter] = counter   // index 사용 시 윗줄 대신 사용
-    setCountSingerList(countArr);
-  };
-
-  const navigate = useNavigate();
-
-  function clickSubmit() {
-    if (confirm('한번 업로드 하면 수정이 불가능합니다. 업로드 하시겠습니까?')) {
-      //form submit
-    } else {
-      return;
-    }
-  }
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ height: '100%', backgroundImage: 'url(/images/background.png)' }}>
@@ -286,13 +345,28 @@ function UploadPage() {
             >
               음원 업로드
             </Typography>
-            <Boxs component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Boxs component="form" noValidate sx={{ mt: 3 }} onSubmit={handleSubmit}>
               <FormControl component="fieldset" variant="standard">
                 <Grid container spacing={2}>
+
+                <Grid item xs={12}>
+                    <label style={{ color: 'white' }}>
+                      앨범커버
+                    </label> <br/>
+                    <input
+                      type="file"
+                      id="file"
+                      accept="image/*"
+                      textDecoration="none"
+                      style={{ color: 'white', borderBox: 'white' }}
+                      required
+                      onChange={handleImage}
+                    />
+                  </Grid>
                   <Grid item xs={12}>
-                    <label style={{ color: 'white' }}>앨범커버</label>
+                    <label style={{ color: 'white' }}>썸네일 확인</label>
                     <div {...getRootProps({ className: 'dropzone' })}>
-                      <input {...getInputProps()} id="image" />
+                      <input {...getInputProps()}/>
                       <aside style={thumbsContainer}> {thumbs}</aside>
                     </div>
                   </Grid>
@@ -301,9 +375,9 @@ function UploadPage() {
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
                       labelId="genre"
                       id="genre-select"
-                      value={genre}
                       required
                       label="genre"
+                      value={genre}
                       onChange={handleChange}
                     >
                       <MenuItem value={'R&B'}>R&B</MenuItem>
@@ -312,108 +386,168 @@ function UploadPage() {
                       <MenuItem value={'Pop'}>Pop</MenuItem>
                       <MenuItem value={'Rock'}>rock</MenuItem>
                     </Select>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                    required
+                    fullWidth
+                    id="title"
+                    name="title"
+                    label="제목"
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TextField
+                    sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                    required
+                    fullWidth
+                    type="album"
+                    id="album"
+                    name="album"
+                    label="앨범"
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <label style={{ color: 'white' }}>
+                    음원 업로드
+                    <br />
+                  </label>
+                  <input
+                    type="file"
+                    id="file"
+                    accept="audio/*"
+                    textDecoration="none"
+                    style={{ color: 'white', borderBox: 'white' }}
+                    onChange={handleFile}
+                    />
+                </Grid>
+                <FormHelperTexts>{musicError}</FormHelperTexts>
+
+                  
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                  sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                    required
+                    placeholder="작곡가 이메일"
+                    inputProps={ariaLabel}
+                    onChange={onChangeSearch}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <Button style={{ backgroundColor: 'white', height: '95%' }} onClick={toggleDrawer(anchor, true)}>
+                      {' '}
+                      검색
+                  </Button></Grid>
+                  <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+                    {list(anchor)}
+                  </Drawer>
+                  <Grid item xs={12} sm={4}>
+                  <TextField
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                      variant="outlined"
                       required
                       fullWidth
-                      id="title"
-                      name="title"
-                      label="제목"
-                    />
-                  </Grid>
+                      id="copyright"
+                      label="저작권 비율"
+                      name="copyright"
+                      autoComplete="copyright"
+                      color="secondary"
+                      onKeyPress={handleOnKeyPress}
+                    /></Grid>
 
-                  <Grid item xs={12}>
-                    <TextField
+<Grid item xs={12} sm={6}>
+                  <TextField
+                  sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                    required
+                    placeholder="작곡가 이메일"
+                    inputProps={ariaLabel}
+                    onChange={onChangeSearch}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <Button style={{ backgroundColor: 'white', height: '95%' }} onClick={toggleDrawer(anchor, true)}>
+                      {' '}
+                      검색
+                  </Button></Grid>
+                  <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+                    {list(anchor)}
+                  </Drawer>
+                  <Grid item xs={12} sm={4}>
+                  <TextField
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                      variant="outlined"
                       required
                       fullWidth
-                      type="album"
-                      id="album"
-                      name="album"
-                      label="앨범"
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <label style={{ color: 'white' }}>
-                      음원 업로드
-                      <br />
-                    </label>
-                    <input
-                      type="file"
-                      id="file"
-                      accept="audio/*"
-                      textDecoration="none"
-                      style={{ color: 'white', borderBox: 'white' }}
-                    />
-                    <FormHelperTexts>{musicError}</FormHelperTexts>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <label style={{ color: 'white' }}>참여 가수</label>
-                    <CreateListDiv>
-                      <div style={{ display: 'inline-block' }}>
-                        {/* <SingerList countSingerList={countSingerList} /> */}
-                        <Button onClick={onAddSingerDiv} style={{ backgroundColor: '#7966ce', color: 'white' }}>
-                          추가
-                        </Button>
-                        <Button
-                          onClick={onDeleteSingerDiv}
-                          style={{ backgroundColor: '#7966ce', color: 'white', marginLeft: '5px' }}
-                        >
-                          삭제
-                        </Button>
-                      </div>
-                    </CreateListDiv>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <CreateListDiv>
-                      <div style={{ display: 'inline-block' }}>
-                        <label style={{ color: 'white' }}>참여 작곡가</label>
-                        <ComposerList countComposerList={countComposerList} />
-                        <Button onClick={onAddComposerDiv} style={{ backgroundColor: '#7966ce', color: 'white' }}>
-                          추가
-                        </Button>
-                        <Button
-                          onClick={onDeleteComposerDiv}
-                          style={{ backgroundColor: '#7966ce', color: 'white', marginLeft: '5px' }}
-                        >
-                          삭제
-                        </Button>
-                      </div>
-                    </CreateListDiv>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <textarea
+                      id="copyright"
+                      label="저작권 비율"
+                      name="copyright"
+                      autoComplete="copyright"
+                      color="secondary"
+                      onKeyPress={handleOnKeyPress}
+                    /></Grid>
+                  
+                  <Grid item xs={12} sm={6}>
+                  <TextField
+                  sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                    required
+                    placeholder="작곡가 이메일"
+                    inputProps={ariaLabel}
+                    onChange={onChangeSearch}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <Button style={{ backgroundColor: 'white', height: '95%' }} onClick={toggleDrawer(anchor, true)}>
+                      {' '}
+                      검색
+                  </Button></Grid>
+                  <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+                    {list(anchor)}
+                  </Drawer>
+                  <Grid item xs={12} sm={4}>
+                  <TextField
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                      variant="outlined"
                       required
-                      rows="10"
-                      cols="60"
-                      id="lylics"
-                      name="lylics"
-                      placeholder="가사"
-                    />
-                  </Grid>
+                      fullWidth
+                      id="copyright"
+                      label="저작권 비율"
+                      name="copyright"
+                      autoComplete="copyright"
+                      color="secondary"
+                      onKeyPress={handleOnKeyPress}
+                    /></Grid>
+                <FormHelperTexts>{rateError}</FormHelperTexts>
 
-                  <Grid item xs={12}>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          onChange={handleAgree}
-                          sx={{
-                            '& .MuiSvgIcon-root': { fontSize: 28 },
-                            color: 'white',
-                            '&.Mui-checked': { color: '#7966ce' },
-                          }}
-                        />
-                      }
-                      label="업로드 약관에 동의합니다."
-                    />
-                  </Grid>
+                <Grid item xs={12}>
+                  <textarea
+                    sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                    required
+                    rows="10"
+                    cols="60"
+                    id="lylics"
+                    name="lylics"
+                    placeholder="가사"
+                />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        onChange={handleAgree}
+                        sx={{
+                          '& .MuiSvgIcon-root': { fontSize: 28 },
+                          color: 'white',
+                          '&.Mui-checked': { color: '#7966ce' },
+                        }}
+                      />
+                    }
+                    label="업로드 약관에 동의합니다."
+                  />
+                </Grid>
                 </Grid>
                 <Button
                   type="submit"
@@ -426,7 +560,7 @@ function UploadPage() {
                   업로드
                 </Button>
               </FormControl>
-              <FormHelperTexts>{UploadError}</FormHelperTexts>
+              <FormHelperTexts style={{marginTop:'-20px'}}>{UploadError}</FormHelperTexts>
             </Boxs>
           </Box>
         </Container>
@@ -436,284 +570,3 @@ function UploadPage() {
 }
 
 export default UploadPage;
-
-const StyledInputBase = styled(InputBase)(() => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    // padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    // transition: theme.transitions.create('width'),
-    backgroundColor: 'white',
-    height: '85%',
-    width: '100%',
-    // [theme.breakpoints.up('md')]: {
-    //   width: '20ch',
-    // },
-  },
-}));
-
-const ariaLabel = { 'aria-label': 'search' };
-
-//참여자 추가
-const DetailDiv = styled.div`
-  div {
-    margin-bottom: 3px;
-    display: flex;
-  }
-`;
-
-const CreateListDiv = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`;
-
-const ComposerList = (props) => {
-  const [state, setState] = React.useState({
-    bottom: false,
-  });
-
-  const anchor = 'bottom';
-
-  const toggleDrawer = (anchor, open) => (event) => {
-    handleOnClick();
-
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
-    setState({ ...state, [anchor]: open });
-  };
-
-  // const Navigate = useNavigate();
-  const [holder, setholder]=useState([])
-  const holderlist = (item) => {
-    setholder((holder) => {
-      console.log(holder);
-      return [...holder, item];
-    });
-  };
-  const list = (anchor) => (
-    <Box
-      style={{ fontColor: 'red' }}
-      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        {data.map((item) => (
-          <ListItem style={{ color: 'Black' }} key={item.id}>
-            <ListItemButton onClick={()=>holderlist(item.id)}>
-              <ListItemText primary={item.nickname} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-    </Box>
-  );
-
-  const [data, setData] = useState([]);
-
-  const token = localStorage.getItem('jwtToken');
-
-  const [search, setSearch] = useState('');
-
-  const [copyright, setcopyright]=useState([])
- 
-  const copyrightlist = (e) => {
-      setcopyright((copyright) => {
-        return [...copyright, e.target.value];
-      });
-  };
-
-  const handleOnKeyPress = (e) => {
-    if (e.key == ' ') {
-      copyrightlist(e);
-    }
-  };
-
-  const onChangeSearch = (e) => {
-    setSearch(e.target.value);
-    toggleDrawer(anchor, true);
-  };
-
-  // const onClickSearch = async () => {
-  //   console.log('로그인');
-  // };
-
-  const handleOnClick = async () => {
-    // console.log(token);
-
-    await axios
-      .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/user?search=${search}`, {
-        headers: {
-          authorization: token,
-        },
-        params: {
-          holder
-        },
-      })
-      .then((res) => {
-        setData(res.data.data);
-        console.log(data);
-        console.log(search);
-        console.log(holder);
-        console.log(copyright)
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  return (
-    <DetailDiv>
-      {props.countComposerList &&
-        props.countComposerList.map((i) => (
-          <div key={i}>
-            <div>
-              <Grid item xs={12} sm={8}>
-                <StyledInputBase
-                  required
-                  placeholder="작곡가 이메일"
-                  inputProps={ariaLabel}
-                  onChange={onChangeSearch}
-                />
-              </Grid>
-              <Grid item xs={12} sm={8}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="copyright"
-                  label="저작권 비율"
-                  name="copyright"
-                  autoComplete="copyright"
-                  sx={{ backgroundColor: 'white' }}
-                  color="secondary"
-                  onKeyPress={handleOnKeyPress}
-                />
-              </Grid>
-              
-              <Button style={{ backgroundColor: 'white', height: '95%' }} onClick={toggleDrawer(anchor, true)}>
-                  {' '}
-                  등록
-                </Button>
-                <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
-                  {list(anchor)}
-                </Drawer>
-
-            </div>
-          </div>
-        ))}
-    </DetailDiv>
-  );
-};
-
-// const onClickSearch = async () => {
-//   console.log('로그인');
-// };
-
-// const SingerList = (props) => {
-//   const [state, setState] = React.useState({
-//     bottom: false,
-//   });
-
-//   const anchor = 'bottom';
-
-//   const toggleDrawer = (anchor, open) => (event) => {
-//     handleOnClick();
-//     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-//       return;
-//     }
-//     setState({ ...state, [anchor]: open });
-//   };
-
-//   const list = (anchor) => (
-//     <Box
-//       sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
-//       role="presentation"
-//       onClick={toggleDrawer(anchor, false)}
-//       onKeyDown={toggleDrawer(anchor, false)}
-//     >
-//       <List>
-//         {data.map((item) => (
-//           <ListItem style={{ color: 'Black' }} key={item.id}>
-//             <ListItemButton>
-//               <ListItemText primary={item.nickname} onClick={onClickSearch}></ListItemText>
-//             </ListItemButton>
-//           </ListItem>
-//         ))}
-//       </List>
-//       <Divider />
-//     </Box>
-//   );
-
-//   const [data, setData] = useState([]);
-
-//   const token = localStorage.getItem('jwtToken');
-
-//   const [search, setSearch] = useState('');
-
-//   const onChangeSearch = (e) => {
-//     setSearch(e.target.value);
-//     toggleDrawer(anchor, true);
-//   };
-
-//   const handleOnClick = async () => {
-//     await axios
-//       .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/user?search=${search}`, {
-//         headers: {
-//           authorization: token,
-//         },
-//       })
-//       .then((res) => {
-//         const data = res.data;
-//         setData(data.data);
-//         console.log(data.data);
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//       });
-//   };
-
-//   return (
-//     <DetailDiv>
-//       {props.countSingerList &&
-//         props.countSingerList.map((item, i) => (
-//           <div key={i}>
-//             <div>
-//               <Grid item xs={12} sm={8}>
-//                 <StyledInputBase required placeholder="가수 이메일" inputProps={ariaLabel} onChange={onChangeSearch} />
-//                 <Button style={{ backgroundColor: 'white', height: '95%' }} onClick={toggleDrawer(anchor, true)}>
-//                   {' '}
-//                   <SearchIcon />
-//                 </Button>
-//                 <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
-//                   {list(anchor)}
-//                 </Drawer>
-//               </Grid>
-//               <Grid item xs={12} sm={4}>
-//                 <TextField
-//                   variant="outlined"
-//                   required
-//                   fullWidth
-//                   id="copyright"
-//                   label="저작권 비율"
-//                   name="copyright"
-//                   autoComplete="copyright"
-//                   sx={{ backgroundColor: 'white' }}
-//                   color="secondary"
-//                 />
-//               </Grid>
-//               <Grid item xs={12} sm={2}>
-//                 <Button style={{ backgroundColor: '#7966ce', color: 'white' }}>등록</Button>
-//               </Grid>
-//             </div>
-//           </div>
-//         ))}
-//     </DetailDiv>
-//   );
-// };
