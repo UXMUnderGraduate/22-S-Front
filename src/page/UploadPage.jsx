@@ -568,6 +568,5 @@ function UploadPage() {
     </ThemeProvider>
   );
 }
-    
- 
+
 export default UploadPage;
