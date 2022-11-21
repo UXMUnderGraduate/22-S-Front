@@ -277,22 +277,27 @@ function UploadPage() {
     const songWriterId = holder[2];
     const postData = { title, artist, artistId, album, genre, lyrics, image, composerId, songWriterId };
 
+    console.log('image data');
     console.log(image);
 
     try {
+      console.log('get response');
+      console.log(postData);
       const response = await axios({
         method: 'post',
         url: `http://${process.env.REACT_APP_BACKEND_URL}/api/v1/upload/meta`,
         headers: { authorization: token },
         data: createFormData(postData),
       });
+      console.log('print data.data');
+      console.log(JSON.stringify(data.data));
       return response.data.data.cid1;
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
@@ -310,6 +315,7 @@ function UploadPage() {
       holder: JSON.stringify(holder),
       rate: JSON.stringify(rate),
     };
+    console.log(`rate: ${JSON.stringify(rate)}`);
 
     //중복곡 체크
     if (!image) {
@@ -338,18 +344,19 @@ function UploadPage() {
         });
     }
     // 저작권 비율 체크
-    const sum = rate.reduce((accumultor, currentNumber) => accumultor * 1 + currentNumber * 1);
+    const sum = rate.reduce((accumulator, currentNumber) => accumulator * 1 + currentNumber * 1, 0);
     console.log(rate);
     console.log(sum);
-    if (sum != 1) setRateError('저작권 총합이 1이하가 되도록 설정해주세요!');
+    if (sum != 1) setRateError('저작권 총합이 1이 되도록 설정해주세요!');
     else setRateError('');
 
     // 회원가입 동의 체크
     if (!checked) alert('올바른 양식과 함께 업로드 약관에 동의해주세요.');
     if (checked) {
-      const cid1 = onhandlePostMeta(joinData);
+      const cid1 = await onhandlePostMeta(joinData);
       joinData.cid1 = cid1;
-      joinData.settleAddr = '';
+      console.log(cid1);
+      joinData.settleAddr = ' ';
       onhandlePost(joinData);
     }
   };
