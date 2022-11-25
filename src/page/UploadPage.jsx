@@ -23,6 +23,7 @@ import styled from 'styled-components';
 import { ListItemButton, Drawer, List, Divider, ListItem, ListItemText } from '@mui/material';
 
 import jwtDecode from 'jwt-decode';
+import { init, deployContract } from '../services/contract';
 
 const Boxs = styled(Box)`
   padding-bottom: 40px !important;
@@ -98,6 +99,7 @@ function UploadPage() {
   const [data, setData] = useState([]);
   const [holder, setholder] = useState([]);
   const [rate, setRate] = useState([]);
+  const [wallet, setWallet] = useState([]);
   const [image, setImage] = useState('');
   const [checked, setChecked] = useState(false);
   const [file, setFile] = useState([]);
@@ -161,6 +163,13 @@ function UploadPage() {
     });
   };
 
+  const walletList = (item) => {
+    setWallet((addr) => {
+      console.log(addr);
+      return [...addr, item];
+    });
+  };
+
   const list = (anchor) => (
     <Box
       style={{ fontColor: 'red' }}
@@ -172,7 +181,12 @@ function UploadPage() {
       <List>
         {data.map((item) => (
           <ListItem style={{ color: 'Black' }} key={item.id}>
-            <ListItemButton onClick={() => holderlist(item.id)}>
+            <ListItemButton
+              onClick={() => {
+                holderlist(item.id);
+                walletList(item.wallet);
+              }}
+            >
               <ListItemText primary={item.nickname} />
             </ListItemButton>
           </ListItem>
@@ -197,10 +211,12 @@ function UploadPage() {
         },
       })
       .then((res) => {
+        console.log(JSON.stringify(res));
         setData(res.data.data);
         console.log('데이터: ', data);
         console.log('찾는 사람: ', search);
         console.log('배열: ', holder);
+        console.log('지갑주소:', wallet);
       })
       .catch((err) => {
         console.log(err);
@@ -245,10 +261,10 @@ function UploadPage() {
     }, new FormData());
 
   const onhandlePost = async (data) => {
-    console.log(data);
-    const { artist } = jwtDecode(token);
+    const { name: artist } = await jwtDecode(token);
     const { title, file, holder, rate, cid1, settleAddr } = data;
     const postData = { title, artist, genre, file, holder, rate, cid1, settleAddr };
+    console.log(postData);
 
     // post
     await axios({
@@ -271,7 +287,9 @@ function UploadPage() {
   };
 
   const onhandlePostMeta = async (data) => {
-    const { artist, id: artistId } = jwtDecode(token);
+    const { name: artist, id: artistId } = jwtDecode(token);
+    console.log(artist);
+    console.log(artistId);
     const { title, album, image, lylics: lyrics } = data;
     const composerId = holder[1];
     const songWriterId = holder[2];
@@ -289,8 +307,6 @@ function UploadPage() {
         headers: { authorization: token },
         data: createFormData(postData),
       });
-      console.log('print data.data');
-      console.log(JSON.stringify(data.data));
       return response.data.data.cid1;
     } catch (err) {
       console.error(err);
@@ -298,6 +314,19 @@ function UploadPage() {
   };
 
   const handleSubmit = async (e) => {
+    const getSettleAddr = async (cid1) => {
+      await init();
+      console.log(rate.map((x) => x * 10000));
+      console.log(JSON.stringify(jwtDecode(token)));
+      const deployedContract = await deployContract.settlement(
+        wallet, //addresses
+        rate.map((x) => x * 10000), //proportion
+        cid1, //songCid
+        '900000000', //price
+      );
+      return deployedContract.options.address;
+    };
+
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
@@ -356,7 +385,8 @@ function UploadPage() {
       const cid1 = await onhandlePostMeta(joinData);
       joinData.cid1 = cid1;
       console.log(cid1);
-      joinData.settleAddr = ' ';
+      joinData.settleAddr = await getSettleAddr(cid1);
+      console.log(joinData.settleAddr);
       onhandlePost(joinData);
     }
   };
