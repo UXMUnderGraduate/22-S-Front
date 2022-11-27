@@ -12,11 +12,15 @@ export default function ListItem(props) {
 
   async function handleSettle() {
     await contractApi.init();
-    const address = props.sellerAddr;
+    const address = props.settlementAddr;
+    // console.log(`props: ${JSON.stringify(props)}`);
     console.log(`SellerContract address: ${address}`);
     contractApi.settlementContract.load(address);
     const result = await contractApi.settlementContract.settle();
+    const txLog = await contractApi.settlementContract.event.getSettleLog(result);
     console.log(`settle() Transaction: ${result.transactionHash}`);
+    window.alert(`정산이 완료되었습니다.\ntxid: ${result.transactionHash}\n정산금액:${txLog.amount}Wei`);
+    console.log(txLog);
   }
 
   return props.pageState === 'Board' ? (

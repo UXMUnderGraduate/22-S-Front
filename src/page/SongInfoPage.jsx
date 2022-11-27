@@ -10,7 +10,10 @@ async function handleBuy(address) {
   await contractApi.init();
   contractApi.settlementContract.load(address);
   const result = await contractApi.settlementContract.buy();
-  console.log(`settle() Transaction: ${result.transactionHash}`);
+  const txLog = await contractApi.settlementContract.event.getBuyLog(result);
+  console.log(`buy() Transaction: ${result.transactionHash}`);
+  window.alert(`구매가 완료되었습니다.\ntxid: ${result.transactionHash}`);
+  console.log(txLog);
 }
 
 export default function SongInfo() {
@@ -19,9 +22,9 @@ export default function SongInfo() {
   const [data, setData] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const address = '0x2F24C9C668F968cDDeEA0B7685029c1e0E9c1b1f';
+  const [address, setAddress] = useState('');
   const token = localStorage.getItem('jwtToken');
-  console.log(token);
+  // console.log(token);
 
   const getRes = async () => {
     setLoading(true);
@@ -33,6 +36,7 @@ export default function SongInfo() {
       })
       .then((res) => {
         setData(res.data.data);
+        setAddress(res.data.data.settlementAddr);
         console.log(res.data);
         setLoading(false);
       })
