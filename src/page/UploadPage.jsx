@@ -374,9 +374,9 @@ function UploadPage() {
     }
     // 저작권 비율 체크
     const sum = rate.reduce((accumulator, currentNumber) => accumulator * 1 + currentNumber * 1, 0);
-    console.log(rate);
     console.log(sum);
-    if (sum != 1) setRateError('저작권 총합이 1이 되도록 설정해주세요!');
+    if (!rate.every((e) => e > 0 && e < 1)) setRateError('저작권 비율은 0보다 크고 1보다 작아야 합니다!');
+    else if (sum != 1) setRateError('저작권 총합이 1이 되도록 설정해주세요!');
     else setRateError('');
 
     // 회원가입 동의 체크
