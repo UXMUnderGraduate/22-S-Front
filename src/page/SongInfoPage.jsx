@@ -31,7 +31,7 @@ export default function SongInfo() {
       data: { hash: result.transactionHash },
     }).then((res) => {
       console.log(res.message);
-      alert(`${res.message}\ntxid: ${result.transactionHash}`);
+      alert(`구매가 완료되었습니다!\ntxid: ${result.transactionHash}`);
     });
   }
 
