@@ -262,7 +262,15 @@ function UploadPage() {
 
   const onhandlePost = async (data) => {
     const { name: artist } = await jwtDecode(token);
-    const { title, file, holder, rate, cid1, settleAddr } = data;
+    const { title, file, holder: dupHolder, rate: dupRate, cid1, settleAddr } = data;
+    const parsedHolder = JSON.parse(dupHolder);
+    const parsedRate = JSON.parse(dupRate);
+    const uniques = {}; // 중복 없는 object
+    parsedHolder.forEach((e, i) => {
+      uniques[e] = (typeof uniques[e] === 'undefined' ? 0 : Number(uniques[e])) + Number(parsedRate[i]);
+    });
+    const holder = JSON.stringify(Object.keys(uniques).map(Number));
+    const rate = JSON.stringify(Object.values(uniques).map(String));
     const postData = { title, artist, genre, file, holder, rate, cid1, settleAddr };
     console.log(postData);
 
@@ -307,6 +315,7 @@ function UploadPage() {
         headers: { authorization: token },
         data: createFormData(postData),
       });
+
       return response.data.data.cid1;
     } catch (err) {
       console.error(err);
@@ -315,12 +324,19 @@ function UploadPage() {
 
   const handleSubmit = async (e) => {
     const getSettleAddr = async (cid1) => {
+      const walletRate = {};
+      wallet.forEach((e, i) => {
+        walletRate[e] = (typeof walletRate[e] === 'undefined' ? 0 : parseFloat(walletRate[e])) + parseFloat(rate[i]);
+      });
+      const resultWallet = Object.keys(walletRate);
+      const resultRate = Object.values(walletRate);
       await init();
-      console.log(rate.map((x) => x * 10000));
+      console.log(resultWallet);
+      console.log(resultRate.map((x) => x * 10000));
       console.log(JSON.stringify(jwtDecode(token)));
       const deployedContract = await deployContract.settlement(
-        wallet, //addresses
-        rate.map((x) => x * 10000), //proportion
+        resultWallet, //addresses
+        resultRate.map((x) => x * 10000), //proportion
         cid1, //songCid
         '900000000', //price
       );
