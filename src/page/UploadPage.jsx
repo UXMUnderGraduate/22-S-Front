@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import {
   Button,
@@ -18,7 +18,6 @@ import {
   MenuItem,
 } from '@mui/material/';
 import { useNavigate } from 'react-router-dom';
-import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 import { ListItemButton, Drawer, List, Divider, ListItem, ListItemText } from '@mui/material';
 
@@ -28,42 +27,12 @@ import { init, deployContract } from '../services/contract';
 const Boxs = styled(Box)`
   padding-bottom: 40px !important;
 `;
-const thumbsContainer = {
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  marginTop: 0,
-  padding: 0,
-  width: 230,
-  height: 230,
-  borderRadius: 5,
-  border: '1px solid lightgray',
-  backgroundColor: 'white',
-};
-
-const thumb = {
-  position: 'relative',
-  display: 'inline-flex',
-  borderRadius: 2,
-  marginBottom: 8,
-  marginRight: 8,
-  width: 230,
-  height: 230,
-  padding: 4,
-  boxSizing: 'border-box',
-};
-
-const thumbInner = {
-  display: 'flex',
-  minWidth: 0,
-  overflow: 'hidden',
-};
-
 const img = {
   display: 'block',
   width: 220,
   height: 220,
 };
+
 const FormHelperTexts = styled(FormHelperText)`
   width: 100%;
   padding-left: 16px;
@@ -94,12 +63,14 @@ function UploadPage() {
   });
   const navigate = useNavigate();
   const [state, setState] = React.useState({
+    index: 0,
     bottom: false,
   });
   const [data, setData] = useState([]);
-  const [holder, setholder] = useState([]);
-  const [rate, setRate] = useState([]);
-  const [wallet, setWallet] = useState([]);
+  const [holder, setholder] = useState(Array(3).fill(''));
+  const [holderNick, setHolderNick] = useState(Array(3).fill(''));
+  const [rate, setRate] = useState(Array(3).fill(''));
+  const [wallet, setWallet] = useState(Array(3).fill(''));
   const [image, setImage] = useState('');
   const [checked, setChecked] = useState(false);
   const [file, setFile] = useState([]);
@@ -114,7 +85,19 @@ function UploadPage() {
 
   const handleImage = (event) => {
     setImage(event.target.files[0]);
+    encodeFileToBase64(event.target.files[0]);
   };
+  const encodeFileToBase64 = (fileBlob) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(fileBlob);
+    return new Promise((resolve) => {
+      reader.onload = () => {
+        setImageSrc(reader.result);
+        resolve();
+      };
+    });
+  };
+  const [imageSrc, setImageSrc] = useState('');
 
   const handleAgree = (event) => {
     setChecked(event.target.checked);
@@ -128,18 +111,25 @@ function UploadPage() {
     setFile(event.target.files[0]);
   };
 
-  const handleOnKeyPress = (e) => {
-    if (e.key == ' ') {
-      handleRate(e);
-    }
-  };
-  const handleRate = (e) => {
-    setRate((rate) => {
-      return [...rate, e.target.value];
-    });
+  // const handleOnKeyPress = (e) => {
+  //   if (e.key == ' ') {
+  //     handleRate(e);
+  //   }
+  // };
+  const handleRate = (e, index) => {
+    let newRate = rate;
+    newRate[index] = e.target.value;
+    setRate(newRate);
+    console.log('new rate:', rate);
   };
 
   function clickSubmit() {
+    console.log('=================');
+    console.log('Holder:', holder);
+    console.log('HolderNick', holderNick);
+    console.log('Rate: ', rate);
+    console.log('Wallet: ', wallet);
+
     if (confirm('한번 업로드 하면 수정이 불가능합니다. 업로드 하시겠습니까?')) {
       //form submit
     } else {
@@ -148,26 +138,27 @@ function UploadPage() {
   }
 
   const toggleDrawer = (anchor, open) => (event) => {
+    const index = event.target.getAttribute('data-index');
     handleOnClick();
 
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-    setState({ ...state, [anchor]: open });
+    setState({ ...state, index, [anchor]: open });
   };
 
-  const holderlist = (item) => {
-    setholder((holder) => {
-      console.log(holder);
-      return [...holder, item];
-    });
+  const handleHolder = (item) => {
+    let newHolder = holder;
+    newHolder[state.index] = item;
+    setholder(newHolder);
+    console.log('new holder:', holder);
   };
 
-  const walletList = (item) => {
-    setWallet((addr) => {
-      console.log(addr);
-      return [...addr, item];
-    });
+  const handleWallet = (item) => {
+    let newWallet = wallet;
+    newWallet[state.index] = item;
+    setWallet(newWallet);
+    console.log('new wallet', wallet);
   };
 
   const list = (anchor) => (
@@ -183,8 +174,10 @@ function UploadPage() {
           <ListItem style={{ color: 'Black' }} key={item.id}>
             <ListItemButton
               onClick={() => {
-                holderlist(item.id);
-                walletList(item.wallet);
+                let newHolderNick = holderNick;
+                newHolderNick[state.index] = item.email;
+                handleHolder(item.id);
+                handleWallet(item.wallet);
               }}
             >
               <ListItemText primary={item.nickname} />
@@ -196,9 +189,13 @@ function UploadPage() {
     </Box>
   );
 
-  const onChangeSearch = (e) => {
-    setSearch(e.target.value);
-    toggleDrawer(anchor, true);
+  const onChangeSearch = (e, index) => {
+    const value = e.target.value;
+    let newHolderNick = holderNick;
+    newHolderNick[index] = value;
+    setHolderNick(newHolderNick);
+    setSearch(value);
+    // toggleDrawer(anchor, true);
   };
 
   const handleOnClick = async () => {
@@ -222,37 +219,6 @@ function UploadPage() {
         console.log(err);
       });
   };
-  //앨범 커버 드래그앤드롭
-  const [images, setImages] = useState([]);
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: 'image/*',
-    onDrop: (acceptedImages) => {
-      setImages(
-        acceptedImages.map((image) =>
-          Object.assign(image, {
-            preview: URL.createObjectURL(image),
-          }),
-        ),
-      );
-      handleImage(image);
-    },
-  });
-
-  const thumbs = images.map((image) => (
-    <div style={thumb} key={image.name}>
-      <div style={thumbInner}>
-        <img src={image.preview} style={img} alt="" />
-      </div>
-    </div>
-  ));
-
-  useEffect(
-    () => () => {
-      // Make sure to revoke the Object URL to avoid memory leaks
-      images.forEach((image) => URL.revokeObjectURL(image.preview));
-    },
-    [images],
-  );
 
   const createFormData = (postData) =>
     Object.keys(postData).reduce((formData, key) => {
@@ -437,7 +403,7 @@ function UploadPage() {
             </Typography>
             <Boxs component="form" noValidate sx={{ mt: 3 }} onSubmit={handleSubmit}>
               <FormControl component="fieldset" variant="standard">
-                <Grid container spacing={2}>
+                <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
                   <Grid item xs={12}>
                     <label style={{ color: 'white' }}>앨범커버</label> <br />
                     <input
@@ -450,13 +416,8 @@ function UploadPage() {
                       onChange={handleImage}
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <label style={{ color: 'white' }}>썸네일 확인</label>
-                    <div {...getRootProps({ className: 'dropzone' })}>
-                      <input {...getInputProps()} />
-                      <aside style={thumbsContainer}> {thumbs}</aside>
-                    </div>
-                  </Grid>
+                  {imageSrc && <img src={imageSrc} alt="preview-img" style={img} />}
+
                   <Grid item xs={12}>
                     <Select
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
@@ -484,7 +445,6 @@ function UploadPage() {
                       label="제목"
                     />
                   </Grid>
-
                   <Grid item xs={12}>
                     <TextField
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
@@ -496,7 +456,6 @@ function UploadPage() {
                       label="앨범"
                     />
                   </Grid>
-
                   <Grid item xs={12}>
                     <label style={{ color: 'white' }}>
                       음원 업로드
@@ -512,7 +471,54 @@ function UploadPage() {
                     />
                   </Grid>
                   <FormHelperTexts>{musicError}</FormHelperTexts>
-
+                  {rate.map((_, index) => {
+                    return (
+                      <>
+                        <Grid item xs={12} sm={6}>
+                          <TextField
+                            sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                            required
+                            placeholder={`저작권자 이메일 ${index}`}
+                            inputProps={ariaLabel}
+                            onChange={(e) => {
+                              onChangeSearch(e, index);
+                            }}
+                            value={holderNick[index]}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={2}>
+                          <Button
+                            data-index={index}
+                            style={{ backgroundColor: '#7966ce', height: '95%', color: 'white' }}
+                            onClick={toggleDrawer(anchor, true)}
+                          >
+                            {' '}
+                            검색
+                          </Button>
+                        </Grid>
+                        <Grid item xs={12} sm={4}>
+                          <TextField
+                            sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                            variant="outlined"
+                            required
+                            fullWidth
+                            id="copyright"
+                            label="저작권 비율"
+                            name="copyright"
+                            autoComplete="copyright"
+                            color="secondary"
+                            onChange={(e) => {
+                              handleRate(e, index);
+                            }}
+                          />
+                        </Grid>
+                      </>
+                    );
+                  })}
+                  <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
+                    {list(anchor)}
+                  </Drawer>
+                  {/*
                   <Grid item xs={12} sm={6}>
                     <TextField
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
@@ -578,7 +584,6 @@ function UploadPage() {
                       onKeyPress={handleOnKeyPress}
                     />
                   </Grid>
-
                   <Grid item xs={12} sm={6}>
                     <TextField
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
@@ -611,8 +616,8 @@ function UploadPage() {
                       onKeyPress={handleOnKeyPress}
                     />
                   </Grid>
+                  */}
                   <FormHelperTexts>{rateError}</FormHelperTexts>
-
                   <Grid item xs={12}>
                     <textarea
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
@@ -624,7 +629,6 @@ function UploadPage() {
                       placeholder="가사"
                     />
                   </Grid>
-
                   <Grid item xs={12}>
                     <FormControlLabel
                       control={
