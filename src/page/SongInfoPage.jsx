@@ -6,22 +6,34 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import * as contractApi from '../services/contract';
 
-async function handleBuy(address) {
-  await contractApi.init();
-  contractApi.settlementContract.load(address);
-  const result = await contractApi.settlementContract.buy();
-  console.log(`settle() Transaction: ${result.transactionHash}`);
-}
-
 export default function SongInfo() {
   const { state } = useLocation();
   const { id } = state;
   const [data, setData] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const address = '0x2F24C9C668F968cDDeEA0B7685029c1e0E9c1b1f';
+  const [address, setAddress] = useState('');
   const token = localStorage.getItem('jwtToken');
-  console.log(token);
+  // console.log(token);
+  async function handleBuy(address) {
+    await contractApi.init();
+    contractApi.settlementContract.load(address);
+    const result = await contractApi.settlementContract.buy();
+    const txLog = await contractApi.settlementContract.event.getBuyLog(result);
+    console.log(`buy() Transaction: ${result.transactionHash}`);
+    console.log(txLog);
+    await axios({
+      method: 'post',
+      headers: {
+        authorization: token,
+      },
+      url: `http://${process.env.REACT_APP_BACKEND_URL}/api/v1/purchase/${id}`,
+      data: { hash: result.transactionHash },
+    }).then((res) => {
+      console.log(res.message);
+      alert(`구매가 완료되었습니다!\ntxid: ${result.transactionHash}`);
+    });
+  }
 
   const getRes = async () => {
     setLoading(true);
@@ -33,6 +45,7 @@ export default function SongInfo() {
       })
       .then((res) => {
         setData(res.data.data);
+        setAddress(res.data.data.settlementAddr);
         console.log(res.data);
         setLoading(false);
       })

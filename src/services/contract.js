@@ -32,12 +32,12 @@ export const deployContract = {
         return newContractInstance;
       });
   },
-  settlement: async (scAddress, addresses, proportions, songCid, price) => {
+  settlement: async (addresses, proportions, songCid, price) => {
     const bytes = [
       Web3.utils.padRight(Web3.utils.toHex(songCid.substr(0, 32)), 64),
       Web3.utils.padRight(Web3.utils.toHex(songCid.substr(32)), 64),
     ];
-    const args = [scAddress, addresses, proportions, bytes, price];
+    const args = [addresses, proportions, bytes, price];
     const deployedSettleContract = await deployContract.deploy(abiSettle, bytecodeSettle, metamask.account, args);
     console.log(`Settlement contract deployed: ${deployedSettleContract.options.address}`);
     return deployedSettleContract;

@@ -29,7 +29,7 @@ function LibraryPage() {
         navigate('/403');
       });
   };
-  // console.log(itemDatas);
+
   const getUploadDataRes = async () => {
     await axios
       .get(
@@ -43,7 +43,6 @@ function LibraryPage() {
       )
       .then((res) => {
         setData(res.data.data);
-        console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -73,6 +72,7 @@ function LibraryPage() {
                 user_id={item.user_id}
                 sellerAddr={item.sellerAddr}
                 pageState="Library"
+                settlementAddr={item.settlementAddr}
               >
                 {console.log(item)}
               </ListItem>
