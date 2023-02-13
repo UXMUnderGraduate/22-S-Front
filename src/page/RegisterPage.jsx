@@ -173,7 +173,7 @@ function RegisterPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ height: '100%', backgroundImage: 'url(/images/background.png)' }}>
+      <Box sx={{ height: '100vh', backgroundImage: 'url(/images/background.png)' }}>
         <Container sx={{ color: '#ffffff' }} component="main" maxWidth="xs">
           <CssBaseline />
           <Box

@@ -3,10 +3,13 @@ import { Container, Box } from '@mui/material';
 import styled from 'styled-components';
 import ListItem from './ListItem';
 const Tpbox = styled.div`
+  margin-top: 1rem;
   font-weight: bold;
   text-align: center;
   background-color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.4);
+  padding-bottom: 1rem;
+  border-radius: 0.3rem;
 `;
 
 const BoardGrid = (props) => {
@@ -29,7 +32,7 @@ const BoardGrid = (props) => {
               genre={item.genre}
               artist={item.artist}
               user_id={item.user_id}
-              pageState={"Board"}
+              pageState={'Board'}
             >
               {console.log(item)}
             </ListItem>

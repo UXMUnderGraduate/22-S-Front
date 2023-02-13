@@ -3,6 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 import * as contractApi from '../services/contract';
 
@@ -61,7 +62,7 @@ export default function SongInfo() {
 
   return (
     <Box sx={{ height: '100%', backgroundImage: 'url(/images/background.png)', textAlign: 'center' }}>
-      <Typography variant="h4" component="h4" sx={{ paddingTop: '8%' }}>
+      <Typography variant="h4" component="h4" sx={{ paddingTop: '1rem' }}>
         {data.title}
       </Typography>
       <Typography variant="h5" component="h5" sx={{ paddingTop: '1%' }}>
@@ -82,25 +83,46 @@ export default function SongInfo() {
         ></Card>
       )}
       {data.genre}
-      <Typography
+      {/* <Typography
         variant="h6"
         component="h6"
         sx={{ paddingTop: '2%', paddingBottom: '10%', marginLeft: '35%', width: '30vw' }}
       >
         {data.lyrics}
-      </Typography>
+      </Typography> */}
+      <Lyrics>{data.lyrics}</Lyrics>
       {localStorage.getItem('type') === 'General' ? (
-        <Button
-          onClick={async () => {
-            await handleBuy(address);
-          }}
-          variant="contained"
-          color="secondary"
-          sx={{ fontSize: '3vh', width: '40%', padding: '1vh', marginBottom: '10%' }}
-        >
-          Buy
-        </Button>
-      ) : null}
+        <>
+          <Button
+            onClick={async () => {
+              await handleBuy(address);
+            }}
+            variant="contained"
+            color="secondary"
+            sx={{ fontSize: '0.9rem', width: '10rem', padding: '0.5rem', m: 1 }}
+          >
+            Buy
+          </Button>
+          <br />
+          <Button
+            onClick={async () => {
+              console.log('first');
+            }}
+            variant="contained"
+            color="secondary"
+            sx={{ fontSize: '0.9rem', width: '10rem', padding: '0.5rem', m: 1 }}
+          >
+            NFT
+          </Button>
+        </>
+      ) : (
+        <Box sx={{ paddingBottom: '3rem' }} />
+      )}
     </Box>
   );
 }
+
+const Lyrics = styled.pre`
+  font-size: 0.8rem;
+  font-weight: 600;
+`;

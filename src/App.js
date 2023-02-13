@@ -13,6 +13,8 @@ import UploadPage from './page/UploadPage';
 import LibraryPage from './page/LibraryPage';
 import ProfilePage from './page/ProfilePage';
 import SongInfoPage from './page/SongInfoPage';
+import NFTBuyPage from './page/NFTBuyPage';
+import NFTSellPage from './page/NFTSellPage';
 
 function App() {
   const theme = createTheme({
@@ -38,6 +40,8 @@ function App() {
           <Route path="/main" element={<MainPage />} />
           <Route path="/board" element={<Board />} />
           <Route path="/board/:id" element={<SongInfoPage />} />
+          <Route path="/nft/purchase/:id" element={<NFTBuyPage />} />
+          <Route path="/nft/sale/:id" element={<NFTSellPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/upload" element={<UploadPage />} />

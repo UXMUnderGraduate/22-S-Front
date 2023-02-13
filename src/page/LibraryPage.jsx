@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container } from '@mui/material';
+import { Box, Container, MenuItem, Select } from '@mui/material';
 import BackgroundVideo from '../components/BackgroundVideo';
 import ListItem from '../components/ListItem';
 import Header from '../components/Header';
@@ -9,10 +9,16 @@ import { useNavigate } from 'react-router-dom';
 
 function LibraryPage() {
   const [data, setData] = useState('');
+  const [select, setSelect] = useState('song');
   const itemDatas = [...data];
   const navigate = useNavigate();
   const token = localStorage.getItem('jwtToken');
   const type = localStorage.getItem('type');
+
+  const handleChange = (e) => {
+    setSelect(e.target.value);
+    //choose nft or song
+  };
 
   const getPurchaseRes = async () => {
     await axios
@@ -59,6 +65,20 @@ function LibraryPage() {
       <BackgroundVideo />
       <Header />
       <Container>
+        <Box>
+          <Select
+            id="celler"
+            name="celler"
+            variant="outlined"
+            value={select}
+            label={'판매자선택'}
+            onChange={handleChange}
+            sx={{ fontSize: '0.6rem', borderRadius: '0.3em', mt: 1, bgcolor: 'white' }}
+          >
+            <MenuItem value={'song'}>곡</MenuItem>
+            <MenuItem value={'nft'}>nft</MenuItem>
+          </Select>
+        </Box>
         <Tpbox>
           {itemDatas.map((item, index) => {
             return (
@@ -90,6 +110,8 @@ const Tpbox = styled.div`
   font-weight: bold;
   padding: 0.5%;
   text-align: center;
+  margin-top: 1%;
+  border-radius: 0.3em;
   background-color: #ffffff;
   background-color: rgba(255, 255, 255, 0.3);
 `;
