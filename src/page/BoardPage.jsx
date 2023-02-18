@@ -21,7 +21,7 @@ const BoardPage = () => {
 
   const getRes = async () => {
     await axios
-      .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/music/chart?genre=pop`, {
+      .get(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/music/chart?genre=All`, {
         headers: {
           Authorization: token,
         },
