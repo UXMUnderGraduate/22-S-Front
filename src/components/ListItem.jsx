@@ -25,7 +25,16 @@ export default function ListItem(props) {
 
   return props.pageState === 'Board' ? (
     <Box
-      sx={{ display: 'flex', textAlign: 'center', border: '0.5px solid', margin: '1.3%', borderRadius: '0.2em' }}
+      sx={{
+        display: 'flex',
+        textAlign: 'center',
+        border: '0.5px solid',
+        margin: '0.8rem',
+        borderRadius: '0.2em',
+        height: '3rem',
+        fontSize: '1.2rem',
+        marginX: '1.2rem',
+      }}
       onClick={() =>
         navigate(`/board/${props.id}`, {
           state: {
@@ -34,29 +43,69 @@ export default function ListItem(props) {
         })
       }
     >
-      <Box sx={{ width: '33%' }}>{props.title}</Box>
-      <Box sx={{ width: '33%' }}>{props.artist}</Box>
-      <Box sx={{ width: '33%' }}>{props.genre}</Box>
+      <Box sx={{ width: '33%', pt: 1.3, textAlign: 'center' }}>{props.title}</Box>
+      <Box sx={{ width: '33%', pt: 1.3, textAlign: 'center' }}>{props.artist}</Box>
+      <Box sx={{ width: '33%', pt: 1.3, textAlign: 'center' }}>{props.genre}</Box>
     </Box>
   ) : (
-    <Box sx={{ display: 'flex', textAlign: 'center', border: '0.5px solid', margin: '1.3%', borderRadius: '0.2em' }}>
-      <Box sx={{ width: '33%' }}>{props.title}</Box>
-      {type === 'General' ? <Box sx={{ width: '33%' }}>{props.artist}</Box> : null}
-      <Box sx={{ width: '33%' }}>{props.album}</Box>
-      <Box sx={{ width: '33%' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        textAlign: 'center',
+        border: '0.5px solid',
+        margin: '0.8rem',
+        borderRadius: '0.2em',
+        height: '4rem',
+        fontSize: '1rem',
+        marginX: '1.2rem',
+        justifyContent: 'space-between',
+      }}
+    >
+      <Box sx={{ width: '33%', pt: 1.5, textAlign: 'center' }}>{props.title}</Box>
+      {type === 'General' ? <Box sx={{ width: '33%', pt: 1.5, textAlign: 'center' }}>{props.artist}</Box> : null}
+      <Box sx={{ width: '33%', pt: 1.5, textAlign: 'center', fontSize: '1.2rem' }}>
         {type === 'Producer' ? (
-          <Button color="secondary" onClick={async () => handleSettle()}>
-            settle
-          </Button>
+          <>
+            <Button color="secondary" onClick={async () => handleSettle()}>
+              settle
+            </Button>
+            <Button
+              color="secondary"
+              
+              onClick={() =>
+                navigate(`/nft/sale/${props.id}`, {
+                  state: {
+                    id: props.id,
+                  },
+                })
+              }
+            >
+              create nft
+            </Button>
+          </>
         ) : (
-          <Button
-            color="secondary"
-            onClick={() =>
-              window.open(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/purchase/${id}?token=${token}`, '_self')
-            }
-          >
-            download
-          </Button>
+          <>
+            <Button
+              color="secondary"
+              onClick={() =>
+                window.open(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/purchase/${id}?token=${token}`, '_self')
+              }
+            >
+              download
+            </Button>
+            <Button
+              color="secondary"
+              onClick={() =>
+                navigate(`/nft/purchase/${props.id}`, {
+                  state: {
+                    id: props.id,
+                  },
+                })
+              }
+            >
+              Buy nft
+            </Button>
+          </>
         )}
       </Box>
     </Box>

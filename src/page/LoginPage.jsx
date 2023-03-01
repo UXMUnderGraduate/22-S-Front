@@ -37,7 +37,6 @@ function LoginPage() {
     console.log('Pw:', inputPw);
     setSummit(true);
     axios
-
       .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/signin`, null, {
         params: {
           email: inputEmail,
@@ -58,7 +57,8 @@ function LoginPage() {
       })
       .catch((err) => {
         setSummit(false);
-        console.log(err);
+        console.log(err.error);
+        console.log(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/signin`);
         alert('아이디와 비밀번호를 확인해주세요');
       });
   };
@@ -134,6 +134,7 @@ function LoginPage() {
             <Grid container>
               <Grid item xs>
                 <Link
+                  sx={{ color: '#7966ce' }}
                   onClick={() => {
                     Navigate('/register');
                   }}
@@ -143,6 +144,7 @@ function LoginPage() {
               </Grid>
               <Grid item>
                 <Link
+                  sx={{ color: '#7966ce' }}
                   onClick={() => {
                     Navigate('/');
                   }}

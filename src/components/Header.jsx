@@ -198,7 +198,7 @@ export default function Header() {
     // removeCookie(COOKIE_KEY, { path: '/' });
     localStorage.clear();
     alert('로그아웃되었습니다.');
-    window.location.replace('http://localhost:3000/');
+    window.location.replace('/');
   };
   // const handleSearch = (
   // );
