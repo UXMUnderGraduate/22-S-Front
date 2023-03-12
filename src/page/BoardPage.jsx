@@ -15,8 +15,12 @@ const BoardPage = () => {
   const test = [...data];
 
   const token = localStorage.getItem('jwtToken');
-  localStorage.setItem('type', jwtDecode(token).type);
-  localStorage.setItem('userId', jwtDecode(token).id);
+  try {
+    localStorage.setItem('type', jwtDecode(token).type);
+    localStorage.setItem('userId', jwtDecode(token).id);
+  } catch (err) {
+    console.log('error: ' + err);
+  }
   // console.log(jwtDecode(token).type);
 
   const getRes = async () => {
@@ -42,7 +46,7 @@ const BoardPage = () => {
   }, []);
 
   return (
-    <Box sx={{ height: '100%', zIndex: 0, overflowX: 'hidden' }}>
+    <Box sx={{ height: '100vh', mb: 3 }}>
       <BackgroundVideo />
       <Header />
       <Box sx={{ width: '100%', margin: 'auto' }}>
