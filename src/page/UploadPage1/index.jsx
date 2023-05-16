@@ -2,6 +2,7 @@ import { Box, Button, Container, ThemeProvider, Typography, createTheme } from '
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import UploadForm from './UploadForm';
+import BackgroundImage from '../../components/BackgroundImage';
 
 export default function index() {
   const theme = createTheme({
@@ -20,7 +21,7 @@ export default function index() {
   const navigate = useNavigate();
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ height: '100%', pb: 5, backgroundImage: 'url(/images/background.png)' }}>
+      <BackgroundImage>
         <Button
           sx={{ display: 'block', color: '#ffffff' }}
           onClick={() => {
@@ -29,7 +30,7 @@ export default function index() {
         >
           뒤로가기
         </Button>
-        <Container sx={{ color: '#ffffff' }} component="main" maxWidth="xs">
+        <Container sx={{ color: '#ffffff', h: '100%', mb: 30 }} component="main" maxWidth="xs">
           {/* <CssBaseline /> */}
           <Box
             sx={{
@@ -49,7 +50,7 @@ export default function index() {
             <UploadForm />
           </Box>
         </Container>
-      </Box>
+      </BackgroundImage>
     </ThemeProvider>
   );
 }

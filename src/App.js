@@ -9,7 +9,9 @@ import LoginPage from './page/LoginPage';
 import RegisterPage from './page/RegisterPage';
 import Error403 from './page/Error/Error403';
 import Error404 from './page/Error/Error404';
-import UploadPage from './page/UploadPage';
+// import UploadPage from './page/UploadPage';
+import UploadPage1 from './page/UploadPage3';
+// import UploadPage2 from './page/UploadPage2';
 import LibraryPage from './page/LibraryPage';
 import ProfilePage from './page/ProfilePage';
 import SongInfoPage from './page/SongInfoPage';
@@ -44,7 +46,8 @@ function App() {
           <Route path="/nft/sale/:id" element={<NFTSellPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/upload" element={<UploadPage1 />} />
+          {/* <Route path="/upload1" element={<UploadPagee />} /> */}
           <Route path="/library" element={<LibraryPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<Error404 />} />

@@ -69,7 +69,7 @@ function LoginPage() {
         <Container component="main" maxWidth="xs">
           <Box
             sx={{
-              paddingTop: 35,
+              paddingTop: 15,
               display: 'flex',
               flexDirection: 'column',
             }}
