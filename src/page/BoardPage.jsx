@@ -35,7 +35,8 @@ const BoardPage = () => {
       })
       .catch((err) => {
         console.log(err);
-        navigate('/403');
+        if (err.message === '로그인이 필요합니다.') navigate('/403');
+        else navigate('/404');
       });
   };
   console.log(test);

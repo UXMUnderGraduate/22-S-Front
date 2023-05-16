@@ -8,8 +8,10 @@ import styled from 'styled-components';
 import * as contractApi from '../services/contract';
 
 export default function SongInfo() {
-  const { state } = useLocation();
-  const { id } = state;
+  const location = useLocation();
+  const { pathname } = location;
+  const id = pathname.split('/')[2];
+
   const [data, setData] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -58,7 +60,7 @@ export default function SongInfo() {
 
   useEffect(() => {
     getRes();
-  }, []);
+  }, [location]);
 
   return (
     <Box sx={{ height: '100%', backgroundImage: 'url(/images/background.png)', textAlign: 'center' }}>
@@ -105,9 +107,11 @@ export default function SongInfo() {
           </Button>
           <br />
           <Button
-            onClick={async () => {
-              console.log('first');
-            }}
+            onClick={() =>
+              navigate(`/nft/purchase/${id}`, {
+                state: { id },
+              })
+            }
             variant="contained"
             color="secondary"
             sx={{ fontSize: '0.9rem', width: '10rem', padding: '0.5rem', m: 1 }}

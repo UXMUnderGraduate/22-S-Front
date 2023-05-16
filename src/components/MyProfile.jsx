@@ -28,7 +28,11 @@ async function handleSettle(address) {
 function MyProfile(props) {
   const [type, setType] = useState('');
   useEffect(() => {
-    setType(jwtDecode(token).type);
+    try {
+      setType(jwtDecode(token).type);
+    } catch (err) {
+      console.log('error: ' + err);
+    }
   }, []);
   const address = props.wallet;
   const [name, setName] = useState(props.name);

@@ -1,13 +1,12 @@
 import { Box, CircularProgress, Typography, Button, Card, Select, MenuItem, FormControl } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-
-// const id = 1;
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function NFTPage() {
   const { state } = useLocation();
   const { id } = state;
+  console.log(id);
   const navigate = useNavigate();
   const [data, setData] = useState('');
   const [loading, setLoading] = useState(true);
@@ -65,7 +64,7 @@ export default function NFTPage() {
               sx={{
                 width: '40vw',
                 height: '40vw',
-                ml:"4vw",
+                ml: '4vw',
                 backgroundSize: 'cover',
                 backgroundImage: `url('data:image/jpeg;base64,${data.image}')`,
               }}
@@ -118,7 +117,7 @@ export default function NFTPage() {
                 }}
                 variant="contained"
                 color="secondary"
-                sx={{ fontSize: '0.3rm', width: '70%', padding: '1vh', mt: '10%', ml: '15%'}}
+                sx={{ fontSize: '0.3rm', width: '70%', padding: '1vh', mt: '10%', ml: '15%' }}
               >
                 NFT 구매
               </Button>

@@ -86,7 +86,11 @@ const ariaLabel = { 'aria-label': 'search' };
 export default function Header() {
   const [type, setType] = useState('');
   useEffect(() => {
-    setType(jwtDecode(token).type);
+    try {
+      setType(jwtDecode(token).type);
+    } catch (err) {
+      console.log('error: ' + err);
+    }
   }, []);
 
   const [state, setState] = React.useState({
@@ -196,9 +200,9 @@ export default function Header() {
 
   const handleLogout = () => {
     // removeCookie(COOKIE_KEY, { path: '/' });
-    localStorage.clear();
     alert('로그아웃되었습니다.');
-    window.location.replace('/');
+    Navigate('/');
+    // localStorage.clear();
   };
   // const handleSearch = (
   // );
