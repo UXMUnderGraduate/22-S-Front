@@ -17,14 +17,28 @@ const BoardItem = (props) => {
         })
       }
     >
-      <Card variant="div" sx={{ display: 'inline-block' }}>
+      <Card variant="div" sx={{ display: 'inline-block', width: '12rem', height: '17rem', m: 0.5 }}>
         <CardActionArea>
           <CardMedia
-            sx={{ width: '190px', height: '190px', backgroundImage: `url('data:image/jpeg;base64,${props.image}')` }}
+            sx={{
+              width: '12rem',
+              height: '12rem',
+              backgroundImage: `url('data:image/jpeg;base64,${props.image}')`,
+            }}
             component="img"
           />
           <CardContent>
-            <Typography gutterBottom variant="h6" component="div">
+            <Typography
+              gutterBottom
+              variant="h6"
+              component="div"
+              sx={{
+                fontSize: '1.1rem',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+              }}
+            >
               {props.title}
             </Typography>
             <Typography color="text.secondary">{props.artist}</Typography>

@@ -34,8 +34,6 @@ export default function NFTPage() {
     setIsFirstContract(); //괄호안에 변수 넣으면됨 리턴 바로되면 걍 상관없고
   };
 
-
-
   const handleChange = (e) => {
     const nextForm = {
       ...formData,
@@ -73,7 +71,13 @@ export default function NFTPage() {
   return (
     <Box
       className="test"
-      sx={{ pt: '7%', height: '100vh', backgroundImage: 'url(/images/background.png)', textAlign: 'center', p: 10 }}
+      sx={{
+        pt: '7%',
+        height: '100vh',
+        backgroundImage: 'url(/images/background.png)',
+        textAlign: 'center',
+        p: 10,
+      }}
     >
       <Box sx={{ justifyContent: 'center', display: 'flex' }}>
         <Box>

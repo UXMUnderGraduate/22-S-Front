@@ -490,7 +490,11 @@ function UploadPage() {
                           <Grid item xs={2}>
                             <Button
                               data-index={index}
-                              style={{ backgroundColor: '#7966ce', height: '100%', color: 'white' }}
+                              style={{
+                                backgroundColor: '#7966ce',
+                                height: '100%',
+                                color: 'white',
+                              }}
                               onClick={toggleDrawer(anchor, true)}
                             >
                               검색

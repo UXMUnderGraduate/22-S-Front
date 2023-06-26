@@ -71,7 +71,6 @@ export default function ListItem(props) {
             </Button>
             <Button
               color="secondary"
-              
               onClick={() =>
                 navigate(`/nft/sale/${props.id}`, {
                   state: {
