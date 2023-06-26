@@ -2,19 +2,23 @@ import { Box, CircularProgress, Typography, Button, Card, Select, MenuItem, Form
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { init, metamask, settlementContract, nftContract } from '../services/contract';
+// const id = 1;
 
 export default function NFTPage() {
   const { state } = useLocation();
   const { id } = state;
-  console.log(id);
   const navigate = useNavigate();
   const [data, setData] = useState('');
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('jwtToken');
 
+  // !테스트를 위해 잠시 주석처리 해놓음
   // const [celler, setCeller] = React.useState('');
   // const [price, setPrice] = React.useState('');
 
+  // !테스트용으로 추가한 데이터임. 추후 삭제 요망
+  const [buyableNFT, setBuyableNFT] = React.useState(['0xEE6EDD7d51a09D26457C1a27d624F1505d885A5c']); //판매중인(살 수 있는) NFT 컨트랙트 주소 목록
   const [formData, setFormData] = React.useState({
     celler: 'test1',
     price: 'WEI',
@@ -29,9 +33,26 @@ export default function NFTPage() {
     setFormData(nextForm);
   };
 
+  // 판매자 목록
+  const sellerOptions = buyableNFT.map((seller, index) => (
+    <MenuItem key={index} value={seller}>
+      판매자{index + 1}
+    </MenuItem>
+  ));
+
+  // 판매가격
+  useEffect(() => {
+    sellPrice();
+  }, []);
+
   useEffect(() => {
     getRes();
   }, []);
+
+  const sellPrice = async () => {
+    init();
+    return nftContract.load(buyableNFT[0]).getPrice();
+  };
 
   const getRes = async () => {
     setLoading(true);
@@ -90,9 +111,11 @@ export default function NFTPage() {
               onChange={handleChange}
               sx={{ borderRadius: '0.3em', mb: '2%', bgcolor: 'white', color: 'black' }}
             >
-              <MenuItem value={'test1'}>판매자1</MenuItem>
+              {sellerOptions}
+              {/* !테스트를 위해 잠시 주석처리 해놓음  */}
+              {/* <MenuItem value={'test1'}>판매자1</MenuItem>
               <MenuItem value={'test2'}>판매자2</MenuItem>
-              <MenuItem value={'test3'}>판매자3</MenuItem>
+              <MenuItem value={'test3'}>판매자3</MenuItem> */}
             </Select>
             <Select
               id="price"
@@ -107,13 +130,29 @@ export default function NFTPage() {
               <MenuItem value={'ETH'}>ETH</MenuItem>
             </Select>
             <Typography variant="h6" component="h5">
-              {'NFT Price : ' + '0 ETH'}
+              {`NFT Price : ${sellPrice()} ETH`}
             </Typography>
             {localStorage.getItem('type') === 'General' ? (
               <Button
                 onClick={async () => {
-                  await console.log('구매함수 쓰셈');
-                  //NFT 구매함수 여기 console.log 지우고 쓰셈 nft구매에 필요한 데이터는 ui바꿀때 콘솔에 찍히거든 객체담기는 변수는 formData고 필요한거잇으면 카톡 ㄱㄱ
+                  await init();
+                  console.log(await nftContract.load(buyableNFT[0]).getPrice());
+                  //TODO: nft contract 주소 받아오기
+                  const settlementContractAddress = ''; //음원 정산 string
+                  settlementContract.load(settlementContractAddress);
+                  const NftContractAddresses = settlementContract.variables
+                    .getNftContractAddresses()
+                    .filter(async (address) => {
+                      nftContractAddress.load(address);
+                      return nftContractAddress.isApprovedForAll(metamask.account, address) ? true : false;
+                    });
+                  setBuyableNFT(NftContractAddresses);
+                  console.log(buyableNFT);
+                  const nftContractAddress = '';
+                  nftContract.load(nftContractAddress);
+                  const txReceipt = await nftContract.buy(await nftContract.variables.getPrice());
+                  // TODO txReceipt.transactionHash: 트랜잭션 해시를 백엔드로 전송
+                  console.log(txReceipt.transactionHash);
                 }}
                 variant="contained"
                 color="secondary"

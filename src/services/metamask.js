@@ -15,7 +15,7 @@ class Metamask {
     if (!this.web3Provider) {
       console.log('Please install MetaMask!');
       alert('Please install MetaMask!');
-      return;
+      return false;
     }
     await window.ethereum
       .request({
@@ -33,6 +33,7 @@ class Metamask {
     this.web3 = new Web3(this.web3Provider);
     this.account = this.web3.currentProvider.selectedAddress;
     console.log('Your Account: ' + this.account);
+    return true;
   }
 }
 

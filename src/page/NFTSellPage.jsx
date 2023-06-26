@@ -12,6 +12,7 @@ import {
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { init, metamask, settlementContract, nftContract, deployContract } from '../services/contract';
 
 const dummy = ['A', 'B', 'C', 'D', 'E'];
 export default function NFTPage() {
@@ -28,10 +29,15 @@ export default function NFTPage() {
   });
   const token = localStorage.getItem('jwtToken');
 
-  const checkFirstContract = () => {
-    // setIsFirstContract(true);
-    //여기에 매타마스크 체크하는 그거 써 반환값이 true false이어야함 결과값을 변수로 만들어서 setIsFirstContract(변수)이렇게만 해줘
-    setIsFirstContract(); //괄호안에 변수 넣으면됨 리턴 바로되면 걍 상관없고
+  const checkFirstContract = async () => {
+    //(완)여기에 매타마스크 체크하는 그거 써 반환값이 true false이어야함 결과값을 변수로 만들어서 setIsFirstContract(변수)이렇게만 해줘
+    //(완)setIsFirstContract(); //괄호안에 변수 넣으면됨 리턴 바로되면 걍 상관없고
+    init();
+    const nftContractAddress = await settlementContract.variables.getNftContractAddresses(metamask.account);
+
+    console.log(nftContractAddress);
+    if (metamask.web3.utils.hexToNumber(nftContractAddress) !== 0) setIsFirstContract(false);
+    return;
   };
 
   const handleChange = (e) => {
@@ -71,13 +77,7 @@ export default function NFTPage() {
   return (
     <Box
       className="test"
-      sx={{
-        pt: '7%',
-        height: '100vh',
-        backgroundImage: 'url(/images/background.png)',
-        textAlign: 'center',
-        p: 10,
-      }}
+      sx={{ pt: '7%', height: '100vh', backgroundImage: 'url(/images/background.png)', textAlign: 'center', p: 10 }}
     >
       <Box sx={{ justifyContent: 'center', display: 'flex' }}>
         <Box>
@@ -172,8 +172,20 @@ export default function NFTPage() {
           </Typography>
           <Button
             onClick={async () => {
-              await console.log('생성함수 쓰셈');
-              //NFT 생성함수 여기 console.log 지우고 쓰셈 nft생성에 필요한 데이터는 ui바꿀때 콘솔에 찍히거든 객체담기는 변수는 formData고 필요한거잇으면 카톡 ㄱㄱ
+              // NFT 생성함수
+              // TODO 여기서 ipfscid와 settlementContract Address를 받아와야 함.
+              const ipfsCid = 'Qm...';
+              const settlementContractAddress = '0x0...';
+              const deployedNftContract = deployContract.nft(ipfsCid, settlementContractAddress);
+              console.log(deployedNftContract.options.address);
+              // NFT 생성함수 여기 console.log 지우고 쓰셈 nft생성에 필요한 데이터는 ui바꿀때 콘솔에 찍히거든 객체담기는 변수는 formData고 필요한거잇으면 카톡 ㄱㄱ
+              nftContract.load(deployedNftContract.options.address);
+              await nftContract.register();
+              const txReceipt = await nftContract.sell(
+                formData.type === 'ETH' ? metamask.web3.utils.toWei(formData.price) : formData.price,
+              );
+              // TODO txReceipt.transactionHash: 트랜잭션 해시를 백엔드로 전송
+              console.log(txReceipt.transactionHash);
             }}
             variant="contained"
             color="secondary"
