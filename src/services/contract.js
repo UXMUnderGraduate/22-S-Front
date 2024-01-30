@@ -1,26 +1,20 @@
 import Web3 from 'web3';
 import Metamask from './metamask.js';
 
-let bytecodeSettle;
-let abiSettle;
-let bytecodeNFT;
-let abiNFT;
+import bytecodeSettle from '../assets/contracts_SettlementContract_sol_SettlementContract.txt';
+import abiSettle from '../assets/contracts_SettlementContract_sol_SettlementContract.json';
 
-//index.html의 실행 위치에 따른 상대경로
-const importData = async () => {
-  bytecodeSettle = './assets/SettlementContractExtra.txt';
-  abiSettle = await fetch('./assets/SettlementContractExtra.json').then((res) => res.json());
-  bytecodeNFT = './assets/NFT1155.txt';
-  abiNFT = await fetch('./assets/NFT1155.json').then((res) => res.json());
-};
+import bytecodeNFT from '../assets/NFT1155.txt';
+import abiNFT from '../assets/NFT1155.json';
 
 export const metamask = new Metamask();
 
 // metamask 초기화 및 컴파일된 컨트랙트 데이터를 불러옴
 export const init = async () => {
-  const result = await metamask.init();
-  await importData();
-  return result;
+  await metamask.init();
+  // await importData();
+  // console.log(abiSeller);
+  // console.log(abiSettle);
 };
 
 // contract deploy에 관한 object
@@ -48,13 +42,6 @@ export const deployContract = {
       });
   },
   // deploy settlementContractExtra contract
-  /**
-   * @param {Array} addresses - 저작권자들 각각의 지갑주소
-   * @param {Array} proportions - 저작권자들 각각의 정산 비율
-   * @param {String} songCid - CID1(곡 메타데이터 CID)
-   * @param {String | Number} price - 곡의 가격
-   * @return {Object} settlementContract 객체 반환
-   */
   settlement: async (addresses, proportions, songCid, price) => {
     //deployContract.
     const bytes = [
@@ -79,23 +66,13 @@ export const deployContract = {
 
 //settlementContractExtra contract의 method들과 state variable들에 접근하는 object
 export const settlementContract = {
-  /**
-   * settlementContract 객체
-   */
   instance: null,
-  /**
-   * 컨트랙트 address를 입력으로 받아 contract 객체를 load함.
-   * @param {string} settlementAddr settlementContract Address
-   */
   load: (settlementAddr) => {
     settlementContract.instance = new metamask.web3.eth.Contract(abiSettle, settlementAddr);
     settlementContract.instance.setProvider(metamask.web3Provider);
     console.log('Settlement contract loaded:');
     console.log(settlementContract.instance);
   },
-  /**
-   * buy()함수
-   */
   buy: async () => {
     const value = await settlementContract.instance.methods.price().call();
     return settlementContract.instance.methods.buy().send({
@@ -115,13 +92,13 @@ export const settlementContract = {
   },
 
   // get을 붙인 이유는 solidity에서 외부에서 contract를 참조할 경우
-  // state variable에 접근 할 수 있도록 getter가 자동으로 생성되기 때문
+  // state variable에 접근 할 수 있도록 getter가 자동으로 생성되기
   // ex) copyrightHolders의 getter: getCopyrightHolders()
   variables: {
-    getCopyrightHolders: async (address) => {
-      return settlementContract.instance.methods.copyrightHolders(address).call();
+    getCopyrightHolders: async () => {
+      return settlementContract.instance.methods.copyrightHolders().call();
     },
-    getNftContractAddresses: async (address) => {
+    getNftContractAddresses: async () => {
       return settlementContract.instance.methods.getNftContractAddresses(address).call();
     },
     getCumulativeSales: async () => {
@@ -220,11 +197,6 @@ export const nftContract = {
   },
   register: () => {
     return nftContract.instance.methods.register().send({
-      from: metamask.account,
-    });
-  },
-  isApprovedForAll: (account, operator) => {
-    return nftContract.instance.methods.isApprovedForAll(account, operator).send({
       from: metamask.account,
     });
   },

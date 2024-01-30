@@ -60,6 +60,7 @@ export default function SongInfo() {
 
   useEffect(() => {
     getRes();
+    console.log(localStorage.getItem('type'));
   }, [location]);
 
   return (
@@ -93,7 +94,7 @@ export default function SongInfo() {
         {data.lyrics}
       </Typography> */}
       <Lyrics>{data.lyrics}</Lyrics>
-      {localStorage.getItem('type') === 'General' ? (
+      {localStorage.getItem('type') === '1' ? (
         <>
           <Button
             onClick={async () => {

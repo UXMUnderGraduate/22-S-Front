@@ -39,6 +39,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/" element={<MainPage />} />
+          {/* <Route exact path="/" element={<MainPage />} /> */}
           <Route path="/main" element={<MainPage />} />
           <Route path="/board" element={<Board />} />
           <Route path="/board/:id" element={<SongInfoPage />} />

@@ -106,6 +106,7 @@ function UploadPage() {
   const [musicError, setMusicError] = useState(false);
   const [rateError, setRateError] = useState(false);
   const [UploadError, setUploadError] = useState('');
+  const [email, setEmail] = useState(['']);
 
   const handleImage = (event) => {
     setImage(event.target.value);
@@ -156,6 +157,7 @@ function UploadPage() {
       console.log(holder);
       return [...holder, item];
     });
+
   };
 
   const list = (anchor) => (
@@ -195,6 +197,8 @@ function UploadPage() {
       })
       .then((res) => {
         setData(res.data.data);
+        const emails = res.data.data.map((user)=>user.email);
+        setEmail(emails);
         console.log('데이터: ', data);
         console.log('찾는 사람: ', search);
         console.log('배열: ', holder);
@@ -237,7 +241,8 @@ function UploadPage() {
 
   const onhandlePost = async (data) => {
     const { title, album, image, lylics, file, holder, rate } = data;
-    const postData = { title, album, lylics, image, genre, file, holder, rate };
+    const updatedGenre = genre === 'R&B' ? 'RandB' : genre;
+    const postData = { title, album, lylics, image, updatedGenre, file, holder, rate };
 
     // post
     await axios
@@ -313,6 +318,20 @@ function UploadPage() {
       onhandlePost(joinData);
     }
   };
+
+  // 입력창 추가
+  const [inputFields, setInputFields] = useState([{ id: 1, label: 'Copyright 1' }]);
+
+  const addInputField = () => {
+    const newId = inputFields.length + 1;
+    setInputFields([...inputFields, { id: newId, label: `Copyright ${newId}` }]);
+  };
+
+  const removeInputField = (id) => {
+    const updatedInputFields = inputFields.filter((field) => field.id !== id);
+    setInputFields(updatedInputFields);
+  };
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -420,77 +439,23 @@ function UploadPage() {
                   </Grid>
                   <FormHelperTexts>{musicError}</FormHelperTexts>
 
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
-                      required
-                      placeholder="작곡가 이메일"
-                      inputProps={ariaLabel}
-                      onChange={onChangeSearch}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={2}>
-                    <Button style={{ backgroundColor: 'white', height: '95%' }} onClick={toggleDrawer(anchor, true)}>
-                      {' '}
-                      검색
-                    </Button>
-                  </Grid>
-                  <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
-                    {list(anchor)}
-                  </Drawer>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
-                      variant="outlined"
-                      required
-                      fullWidth
-                      id="copyright"
-                      label="저작권 비율"
-                      name="copyright"
-                      autoComplete="copyright"
-                      color="secondary"
-                      onKeyPress={handleOnKeyPress}
-                    />
-                  </Grid>
 
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
-                      required
-                      placeholder="작곡가 이메일"
-                      inputProps={ariaLabel}
-                      onChange={onChangeSearch}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={2}>
-                    <Button style={{ backgroundColor: 'white', height: '95%' }} onClick={toggleDrawer(anchor, true)}>
-                      {' '}
-                      검색
+                  {/* 더하기 버튼 추가 */}
+                  <Grid item xs={12} sm={12}>
+                    <Button style={{ backgroundColor: 'white', height: '95%' }} onClick={addInputField}>
+                      +
                     </Button>
-                  </Grid>
-                  <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
-                    {list(anchor)}
-                  </Drawer>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
-                      variant="outlined"
-                      required
-                      fullWidth
-                      id="copyright"
-                      label="저작권 비율"
-                      name="copyright"
-                      autoComplete="copyright"
-                      color="secondary"
-                      onKeyPress={handleOnKeyPress}
-                    />
-                  </Grid>
+                  </Grid> 
 
-                  <Grid item xs={12} sm={6}>
+                  {/* 입력필드 */}
+                  {inputFields.map((field) => (
+                    <>
+                    <Grid item xs={12} sm={4}>
                     <TextField
                       sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
                       required
                       placeholder="작곡가 이메일"
+                      value = {email[holder[field.id - 1] - 1]}
                       inputProps={ariaLabel}
                       onChange={onChangeSearch}
                     />
@@ -504,21 +469,26 @@ function UploadPage() {
                   <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
                     {list(anchor)}
                   </Drawer>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
-                      variant="outlined"
-                      required
-                      fullWidth
-                      id="copyright"
-                      label="저작권 비율"
-                      name="copyright"
-                      autoComplete="copyright"
-                      color="secondary"
-                      onKeyPress={handleOnKeyPress}
-                    />
-                  </Grid>
-                  <FormHelperTexts>{rateError}</FormHelperTexts>
+                    <Grid key={field.id} item xs={12} sm={4}>
+                      <TextField
+                        sx={{ backgroundColor: 'white', borderRadius: '0.3em' }}
+                        variant="outlined"
+                        required
+                        fullWidth
+                        id={`copyright-${field.id}`}
+                        label={`저작권 비율-${field.id}`}
+                        name={`copyright-${field.id}`}
+                        autoComplete={`copyright-${field.id}`}
+                        color="secondary"
+                        onChange={handleOnKeyPress}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={2}>
+                      <Button style={{ backgroundColor: 'white' }} onClick={() => removeInputField(field.id)}>삭제</Button>
+                    </Grid>
+                    <FormHelperTexts>{rateError}</FormHelperTexts>
+                    </>
+                  ))}
 
                   <Grid item xs={12}>
                     <textarea

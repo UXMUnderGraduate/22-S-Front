@@ -12,7 +12,8 @@ import {
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { init, metamask, settlementContract, nftContract, deployContract } from '../services/contract';
+// import { init, metamask, settlementContract, nftContract, deployContract } from '../services/contract';
+import { init, metamask, nftContract, deployContract } from '../services/contract';
 
 const dummy = ['A', 'B', 'C', 'D', 'E'];
 export default function NFTPage() {
@@ -23,22 +24,59 @@ export default function NFTPage() {
   const [data, setData] = useState('');
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = React.useState({
-    chooseNFT: dummy[0],
+    chooseNFT: dummy,
     price: 0,
     type: 'WEI',
   });
   const token = localStorage.getItem('jwtToken');
 
-  const checkFirstContract = async () => {
-    //(완)여기에 매타마스크 체크하는 그거 써 반환값이 true false이어야함 결과값을 변수로 만들어서 setIsFirstContract(변수)이렇게만 해줘
-    //(완)setIsFirstContract(); //괄호안에 변수 넣으면됨 리턴 바로되면 걍 상관없고
-    init();
-    const nftContractAddress = await settlementContract.variables.getNftContractAddresses(metamask.account);
+  // 컨트랙트 연결시 해제
+  // const checkFirstContract = async () => {
+  //   //(완)여기에 매타마스크 체크하는 그거 써 반환값이 true false이어야함 결과값을 변수로 만들어서 setIsFirstContract(변수)이렇게만 해줘
+  //   //(완)setIsFirstContract(); //괄호안에 변수 넣으면됨 리턴 바로되면 걍 상관없고
+  //   await init();
+  //   console.log('init done.');
+  //   const nftContractAddress = await settlementContract.variables.getNftContractAddresses(metamask.account);
 
-    console.log(nftContractAddress);
-    if (metamask.web3.utils.hexToNumber(nftContractAddress) !== 0) setIsFirstContract(false);
-    return;
-  };
+  //   console.log(nftContractAddress);
+  //   if (metamask.web3.utils.hexToNumber(nftContractAddress) !== 0) setIsFirstContract(false);
+  //   return;
+  // };
+
+  //isFirstContract 상태 변경 함수, 컨트랙트 연결시 삭제
+  const change_setIsFirstContract = () => {
+    if(isFirstContract === true){
+      setIsFirstContract(false);
+    }
+    else {
+      setIsFirstContract(true);
+    }
+  }
+
+  const setMenuItem = async () => {
+    //contract 연결시 init 삭제, 아래 setFormData 삭제
+    await init();
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      chooseNFT : metamask.account
+    }))
+    console.log('menu change');
+
+    // //contract 연결시 주석 해제
+    // if(isFirstContract === false){
+    //     setFormData((prevFormData) => ({
+    //       ...prevFormData,
+    //       chooseNFT : metamask.account
+    //     }))
+    //   }
+    // else{
+    //   setFormData((prevFormData) => ({
+    //     //여기에 구매 가능한 nft 목록 받아와서 chooseNFT 변경
+    //     ...prevFormData,
+    //     chooseNFT : nftContractAddress
+    //   }))
+    // }
+  }
 
   const handleChange = (e) => {
     const nextForm = {
@@ -50,8 +88,14 @@ export default function NFTPage() {
   };
 
   useEffect(() => {
-    getRes();
-    checkFirstContract();
+    const fetchData = async () => {
+      await getRes();
+      // contract 연결시 주석 해제
+      //await checkFirstContract();
+      await setMenuItem();
+    };
+  
+    fetchData();
   }, []);
 
   const getRes = async () => {
@@ -74,6 +118,81 @@ export default function NFTPage() {
       });
   };
 
+  //ipfsCid 값을 받아오는 함수
+  const getCID = async () => {
+    //메타데이터 업로드
+    setLoading(true);
+    let get_Cid = '';
+    await axios
+      .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/nft/meta` , {
+        musicId : data.id,
+      },
+      {
+        headers:{
+          Authorization : token,
+        },
+      }
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data.data.cid);
+        console.log('load CID complete.');
+        get_Cid = res.data.data.cid;
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        navigate('/403');
+      });
+      return get_Cid;
+  };
+  
+  //transactionHash 전송
+  const sendTXid = async (txid) => {
+    setLoading(true);
+    await axios
+      .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/nft/sell/${id}` , {
+        txId : txid,
+      },
+      {
+        headers: {
+          Authorization : token,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        navigate('/403');
+      });
+  }
+
+  //NFT 생성
+  // const CreateNFT = async (musicid, ipfsCid, contractaddr, txid) => {
+  //   setLoading(true);
+  //   await axios
+  //     .post(`http://${process.env.REACT_APP_BACKEND_URL}/api/v1/nft/create`, {
+  //       musicId : musicid,
+  //       cid : ipfsCid,
+  //       contractAddr : contractaddr,
+  //       txId : txid,
+  //     },
+  //     {
+  //       headers: {
+  //         Autorization : token,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       navigate('/403');
+  //     });
+  // }
+
   return (
     <Box
       className="test"
@@ -93,6 +212,7 @@ export default function NFTPage() {
               }}
             ></Card>
           )}
+          <Button onClick={change_setIsFirstContract}>발행여부 변경</Button>
           <Typography variant="h4" component="h4" sx={{ paddingTop: '1%' }}>
             {data.title}
           </Typography>
@@ -126,6 +246,7 @@ export default function NFTPage() {
                 onChange={handleChange}
                 sx={{ borderRadius: '0.3em', mb: '2%', bgcolor: 'white', color: 'black' }}
               >
+                {/* 컨트랙트 연결시 아래 dummy라고 적힌 부분 chooseNFT로 변겅*/}
                 {dummy.map((item) => {
                   return (
                     <MenuItem key={item} value={item}>
@@ -173,25 +294,33 @@ export default function NFTPage() {
           <Button
             onClick={async () => {
               // NFT 생성함수
-              // TODO 여기서 ipfscid와 settlementContract Address를 받아와야 함.
-              const ipfsCid = 'Qm...';
-              const settlementContractAddress = '0x0...';
+              const ipfsCid = await getCID();
+              console.log(ipfsCid);
+              const settlementContractAddress = data.settlementAddr;
+
               const deployedNftContract = deployContract.nft(ipfsCid, settlementContractAddress);
               console.log(deployedNftContract.options.address);
-              // NFT 생성함수 여기 console.log 지우고 쓰셈 nft생성에 필요한 데이터는 ui바꿀때 콘솔에 찍히거든 객체담기는 변수는 formData고 필요한거잇으면 카톡 ㄱㄱ
               nftContract.load(deployedNftContract.options.address);
+
               await nftContract.register();
+
               const txReceipt = await nftContract.sell(
                 formData.type === 'ETH' ? metamask.web3.utils.toWei(formData.price) : formData.price,
               );
-              // TODO txReceipt.transactionHash: 트랜잭션 해시를 백엔드로 전송
-              console.log(txReceipt.transactionHash);
+
+              //NFT 생성, 컨트랙트 연결시 주석 해제
+              // if(isFirstContract === true){
+              //   CreateNFT(data.id, ipfsCid, settlementContractAddress, txReceipt.transactionHash);
+              // }
+
+              //  트랜젝션 해시 백엔드로 전송
+              sendTXid(txReceipt.transactionHash);
             }}
             variant="contained"
             color="secondary"
             sx={{ fontSize: '0.3rm', width: '70%', padding: '1vh', mt: '10%' }}
           >
-            NFT 생성
+            NFT 판메
           </Button>
         </Box>
       </Box>
