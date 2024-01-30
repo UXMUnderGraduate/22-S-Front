@@ -222,7 +222,7 @@ export default function Header() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={() => window.location.replace('/profile')}>My account</MenuItem>
-      {type === 'Producer' ? <MenuItem onClick={() => window.location.replace('/upload')}>Upload</MenuItem> : null}
+      {type === 2 ? <MenuItem onClick={() => window.location.replace('/upload')}>Upload</MenuItem> : null}
       <MenuItem onClick={handleOpen}>terms of service</MenuItem>
       <Modal
         open={open}

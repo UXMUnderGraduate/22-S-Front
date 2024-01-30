@@ -43,6 +43,7 @@ const BoardPage = () => {
 
   useEffect(() => {
     getRes();
+    console.log(localStorage.getItem('type'));
     // window.location.reload(true);
   }, []);
 
